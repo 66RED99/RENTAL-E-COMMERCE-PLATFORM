@@ -1,0 +1,176 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>WanderWheels & Homesteads</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+      margin-left: 400px;
+      margin-right: 100px;
+      margin-top: 200px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+    .patient {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.patient td, #patient th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.patient tr:nth-child(even){background-color: #f2f2f2;}
+
+.patient tr:hover {background-color: #ddd;}
+
+.patient th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+</style>
+<link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
+    <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
+    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">House</a>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
+    <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+    <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
+    <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
+    <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
+
+  </div>
+</nav>
+<h1 style="text-align: center;color: red;margin-top: 100px;">Bikes</h1>
+<table style="margin-top: 50px;margin-left: 500px;width: 50%;" class="patient">
+    <tr>
+      <th>Bike_station</th>
+      <th>Bike_name</th>
+      <th>Bike_type</th>
+      <th>Bike_price</th>
+
+    </tr>
+    {% for j in result1 %}
+    <tr>
+      <form action="{% url 'edit_bike' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
+      <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
+      <td><input type="text" value="{{ j.Bike_station }}" id="station" name="station" required></td>
+      <td><input type="text" value="{{ j.Bike_name }}" id="name" name="name" required></td>
+      <td><input type="text" value="{{ j.Bike_type }}" id="type" name="type" required></td>
+      <td><input type="number" value="{{ j.Bike_price }}" class="price" name="price" required></td>
+      <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
+      </form >
+      <form  action="{% url 'delete_bike' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
+          <input type="hidden" value="{{ j.Sl_no }}" name="hide" id="hide">
+          <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>DELETE</b></button></td>
+      </form>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<div style="margin-top: 100px;">
+<h1 style="text-align: center;color: red;">Home_stay</h1>
+  <table style="margin-top: 50px;margin-left: 500px;width: 50%;" class="patient">
+    <tr>
+      <th>Home_Stay</th>
+      <th>Type</th>
+      <th>Location</th>
+      <th>Price</th>
+      <th>Phone Number</th>
+    </tr>
+    {% for j in result2 %}
+    <tr>
+    <form action="{% url 'edit_homestay' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
+    <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
+    <td><input type="text" value="{{ j.House_name }}" id="name" name="name" required></td>
+    <td><input type="text" value="{{ j.House_type }}" id="type" name="type" required></td>
+    <td><input type="text" value="{{ j.House_location }}" id="location" name="location" required></td>
+    <td><input type="text" value="{{ j.House_price }}" class="price" name="price" required></td>
+    <td><input type="text" value="{{ j.House_Phone }}" class="ph_no" name="ph_no" required></td>
+    <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
+    </form >
+    <form  action="{% url 'delete_homestay' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
+        <input type="hidden" value="{{ j.Sl_no }}" name="hide" id="hide">
+        <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>DELETE</b></button></td>
+    </form>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>
+
+

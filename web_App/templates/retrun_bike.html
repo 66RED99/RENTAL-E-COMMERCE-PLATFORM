@@ -1,0 +1,117 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>WanderWheels & Homesteads</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+    width: 50%;
+    margin-top:50px;
+    margin-left: 600px;
+    padding: 50px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    color: #333;
+    margin: 10px 0;
+}
+
+.card p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.card-link {
+    text-decoration: none;
+    color: #007bff;
+    display: block;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+
+</style>
+<link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    
+</head>
+<body>
+
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="{% url 'user_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="{% url 'book_homestay' %}" class="w3-bar-item w3-button w3-hover-white">Book Home Stay</a>
+    <a href="{% url 'book_bike' %}" class="w3-bar-item w3-button w3-hover-white">Book Bikes</a>
+    <a href="{% url 'retrun_page' %}" class="w3-bar-item w3-button w3-hover-white">Return Bikes</a>
+    <a href="{% url 'feedback_user' %}" class="w3-bar-item w3-button w3-hover-white">Feedback</a>
+    <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
+
+  </div>
+</nav>
+<h1 style="text-align: center;margin-left: 250px;color: #007bff;">RENT BIKE</h1>
+{% for k in rent_detail %}
+<form  id="bike_" action="{% url 'return_bike' %}" method="post" enctype="multipart/form-data" >
+    {% csrf_token %}
+    <div class="card">
+        <input type="hidden" value="{{ k.Bike_name }}" name="name" id="name">
+        <input type="hidden" value="{{ k.Bikestation_name }}" name="station" id="station">
+        
+        <h1>{{ k.Bikestation_name }}</h1>
+        <h2 >{{ k.Bike_name }}</h2>
+        <h3>Date:<strong> {{ k.Rent_date }}</h3>
+        <h3>Status:<strong>{{ k.Status }}</strong> </h3>
+        <label for="selectDate" style="font-size: 20px;"><strong>Select Return Date:</strong></label>       
+        <input type="date" id="selectDate" name="selectDate" required>
+        <p><button style="margin-top:50px;width: 50%; margin-left: 220px;" type="submit">Return Vechicle</Select></button></p>
+    </div>
+    </form>
+    {% endfor %}
+
+</body>
+</html>
+
+

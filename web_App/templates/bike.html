@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>WanderWheels & Homesteads</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+      margin-left: 400px;
+      margin-right: 100px;
+      margin-top: 200px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+</style>
+<link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
+    <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
+    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">House</a>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
+    <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+    <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
+    <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
+    <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
+
+  </div>
+</nav>
+<h2 style="text-align: center;">Add Bike Details</h2>
+    <form id="bikeForm" method="post" action="{% url 'adding_bikes' %}" enctype="multipart/form-data">{% csrf_token %}
+      <label for="bikestation">Bike Station:</label>
+      <select id="bikestation" name="bikestation" required>
+        {% for k in bike_station_ %}
+        <option value="{{k.Bikestation_name}}">{{k.Bikestation_name}}</option>
+        {% endfor %}
+      </select>
+      <label for="bikeName">Bike Name:</label>
+      <input type="text" id="bikeName" name="bikeName" required>
+
+      <label for="bikeType">Bike Type:</label>
+      <select id="bikeType" name="bikeType" required>
+        <option value="road">Road Bike</option>
+        <option value="mountain">Mountain Bike</option>
+        <option value="hybrid">Hybrid Bike</option>
+      </select>
+
+      <label for="bikePrice">Daily Rental Price ($):</label>
+      <input type="number" id="bikePrice" name="bikePrice" min="100" required>
+
+      <button type="submit" >Add Bike</button>
+    </form>
+
+
+</body>
+</html>
+
+
