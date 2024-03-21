@@ -15,14 +15,177 @@ body {font-size:16px;}
 .w3-half img:hover{opacity:1}
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
-
+#chat-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #chat-history {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #user-input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #submit-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .user-message {
+            text-align: right;
+            background-color: #d3d3d3;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .bot-message {
+            text-align: left;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+#chat-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none; /* Initially hide the chat container */
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    background-color: #fff;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+#chat-container_ {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none; /* Initially hide the chat container */
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    background-color: #fff;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+#chat-container__ {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none; /* Initially hide the chat container */
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    background-color: #fff;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+#chat-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+#chat-history_ {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #user-input_ {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #submit-btn_ {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .user-message_ {
+            text-align: right;
+            background-color: #d3d3d3;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .bot-message_ {
+            text-align: left;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
 </style>
 <link rel="stylesheet" href="{% static 'styles.css' %}" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
 
- 
+ $(document).ready(function(){
+  $("#chat-toggle-btn").click(function(){
+  $("#chat-container_").show();
+ });
+});
+
+$(document).ready(function(){
+  $("#close-chat-btn").click(function(){
+  $("#chat-container").hide();
+  $("#chat-container_").hide();
+  $("#chat-container__").hide();
+ });
+});
+$(document).ready(function(){
+  $("#bike").click(function(){
+  $("#chat-container__").show();
+ });
+});
+$(document).ready(function(){
+  $("#homestay").click(function(){
+  $("#chat-container").show();
+ });
+});
+$(document).ready(function(){
+  $("#close-chat-btn_").click(function(){
+  $("#chat-container").hide();
+  $("#chat-container_").hide();
+  $("#chat-container__").hide();
+ });
+});
+$(document).ready(function(){
+  $("#close-chat-btn__").click(function(){
+  $("#chat-container").hide();
+  $("#chat-container_").hide();
+  $("#chat-container__").hide();
+ });
+});
 </script>
 </head>
 <body>
