@@ -16,6 +16,8 @@ class Bike_detail(models.Model):
     Bike_type = models.CharField(max_length=255)
     Bike_price = models.IntegerField()
     Bike_availability = models.CharField(max_length=255,default="Available")
+    Bike_image = models.ImageField(upload_to='bike_images/', blank=True, null=True)
+
 
 class Homestay_details(models.Model):
     Sl_no = models.IntegerField(primary_key=True)

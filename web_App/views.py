@@ -134,8 +134,16 @@ def adding_bikes(request):
     name = request.POST.get("bikeName")
     type = request.POST.get("bikeType")
     price = request.POST.get("bikePrice")
+    bike_image = request.FILES.get("bikeImage")
+
     print(station,name,type,price)
-    obj = Bike_detail(Bike_station=station, Bike_name=name, Bike_type=type, Bike_price=price)
+    obj = Bike_detail(
+            Bike_station=station,
+            Bike_name=name,
+            Bike_type=type,
+            Bike_price=price,
+            Bike_image=bike_image  # Store the uploaded image file object
+        )
     obj.save()
     return HttpResponse("<script>window.location.href='/bike_page/';alert('Bike added sucessfully')</script>")
 

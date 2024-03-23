@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from web_App.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", front_page),
@@ -59,7 +61,7 @@ urlpatterns = [
     path("get_response/", get_response, name="get_response"),
     path("get_response1/", get_response1, name="get_response1"),
     path("book_homestay_bot/", book_homestay_bot, name="book_homestay_bot"),
-    path("manage_booking/", manage_booking, name="manage_booking"),
+    path("manage_booking/", manage_booking, name="manage_booking"),]
 
-    
-]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

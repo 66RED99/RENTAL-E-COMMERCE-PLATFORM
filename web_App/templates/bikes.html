@@ -101,7 +101,22 @@ body {
         <input type="hidden" value="{{ k.Bike_name }}" name="name" id="name">
         <h2 >{{ k.Bike_name }}</h2>
         <p><strong>Type:</strong> {{ k.Bike_type }}</p>
-        <p><strong>Price:</strong> {{ k.Bike_price }}</p>
+        <p><strong>Price:</strong> {{ k.Bike_price }}</p>      
+
+        {% load static %}
+        <img src="{% static k.Bike_image %}" alt="{{ k.Bike_name }}" style="
+            display: block;
+            width: 300px; /* Adjust this value as needed */
+            height: 200px; /* Adjust this value as needed */
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+            object-fit: cover;
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        
+        
+
         <p><button type="submit">Select</Select></button></p>
     </div>
     </form>
