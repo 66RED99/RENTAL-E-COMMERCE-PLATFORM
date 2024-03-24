@@ -19,3 +19,4 @@ Bike Name: Deo, Bike Station: Bikers Spots, Check-in Date: 17/04/2024
 Bike Name: Kawasaki Ninja, Bike Station: iones two wheelers, Check-in Date: 04/04/2024
 Bike Name: Hunter 350, Bike Station: Bikers Spots, Check-in Date: 04/04/2024
 Bike Name: Himalayan 450, Bike Station: Bikers Spots, Check-in Date: 04/04/2024
+Bike Name: Himalayan 450, Bike Station: Bikers Spots, Check-in Date: 04/04/2024
