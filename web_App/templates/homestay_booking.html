@@ -93,6 +93,17 @@ body {
     <div class="card">
         <input type="hidden" value="{{ k.House_name }}" name="name" id="name">
         <h2 >{{ k.House_name }}</h2>
+        {% load static %}
+        <img src="{% static k.House_image %}" alt="{{ k.House_name }}" style="
+            display: block;
+            width: 300px; /* Adjust this value as needed */
+            height: 200px; /* Adjust this value as needed */
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+            object-fit: cover;
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
         <p><strong>Type:</strong> {{ k.House_type }}</p>
         <p><strong>Location:</strong> {{ k.House_location }}</p>
         <p><strong>Home Stay Rent:</strong> {{ k.House_price }}</p>

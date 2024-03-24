@@ -26,6 +26,7 @@ class Homestay_details(models.Model):
     House_location = models.CharField(max_length=255)
     House_price = models.IntegerField()
     House_Phone = models.IntegerField()
+    House_image = models.ImageField(upload_to='homestay_images/', blank=True, null=True)
 
 class Bikestation_details(models.Model):
     Sl_no = models.IntegerField(primary_key=True)

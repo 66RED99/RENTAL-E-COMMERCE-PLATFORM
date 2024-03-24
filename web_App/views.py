@@ -3,7 +3,9 @@ from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
-
+import os
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 def front_page(request):
     return render(request, "home.html")
@@ -122,12 +124,36 @@ def adding_homestay(request):
     location = request.POST.get("propertyLocation")
     price = request.POST.get("propertyPrice")
     ph_no = request.POST.get("phnno")
-    print(name,type,location,price,ph_no)
-    obj = Homestay_details(House_name=name, House_type=type, House_location=location, House_price=price, House_Phone=ph_no)
+    home_image = request.FILES.get("homeImage")  # Get the uploaded image file
+
+    image_filename = home_image.name
+
+    # Construct the file path within the bike_images folder
+    image_path = os.path.join('homestay_images', image_filename)
+
+    # Check if the image already exists in the bike_images folder
+    if default_storage.exists(image_path):
+        # Use the existing file path
+        home_image_path = image_path
+    else:
+        # Save the new image file
+        file_content = ContentFile(home_image.read())
+        home_image_path = default_storage.save(image_path, file_content)
+        home_image_path = home_image_path
+
+    print(name, type, location, price, ph_no)
+    obj = Homestay_details(
+        House_name=name,
+        House_type=type,
+        House_location=location,
+        House_price=price,
+        House_Phone=ph_no,
+        House_image=home_image_path  # Store the uploaded image file object
+    )
     obj.save()
     file_path = 'Web_app/entities/House_location.dat'
     add_place(file_path, location)
-    return HttpResponse("<script>window.location.href='/house_page/';alert('HomeStay added sucessfully')</script>")
+    return HttpResponse("<script>window.location.href='/house_page/';alert('HomeStay added successfully')</script>")
 
 def adding_bikes(request):
     station = request.POST.get("bikestation")
@@ -136,14 +162,29 @@ def adding_bikes(request):
     price = request.POST.get("bikePrice")
     bike_image = request.FILES.get("bikeImage")
 
-    print(station,name,type,price)
+    image_filename = bike_image.name
+
+    # Construct the file path within the bike_images folder
+    image_path = os.path.join('bike_images', image_filename)
+
+    # Check if the image already exists in the bike_images folder
+    if default_storage.exists(image_path):
+        # Use the existing file path
+        bike_image_path = image_path
+    else:
+        # Save the new image file
+        file_content = ContentFile(bike_image.read())
+        bike_image_path = default_storage.save(image_path, file_content)
+        bike_image_path = bike_image_path
+
+    print(station, name, type, price)
     obj = Bike_detail(
-            Bike_station=station,
-            Bike_name=name,
-            Bike_type=type,
-            Bike_price=price,
-            Bike_image=bike_image  # Store the uploaded image file object
-        )
+        Bike_station=station,
+        Bike_name=name,
+        Bike_type=type,
+        Bike_price=price,
+        Bike_image=bike_image_path  # Store the existing or new image file path with correct path
+    )
     obj.save()
     return HttpResponse("<script>window.location.href='/bike_page/';alert('Bike added sucessfully')</script>")
 
