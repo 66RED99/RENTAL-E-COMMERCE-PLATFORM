@@ -14,14 +14,16 @@ from .generatengrams import ngrammatch
 def load_data_from_database(table_name):
     # Connect to SQLite database
     conn = sqlite3.connect('db.sqlite3')
-    
+
     # Execute query to fetch data from table
     query = f"SELECT * FROM '{table_name}'"
     df = pd.read_sql_query(query, conn)
-    
+
     # Close connection
     conn.close()
+
     
+
     return df
 
 
@@ -54,15 +56,23 @@ def check_actions(current_intent, attributes, context):
     if perform_action_result is not None:  
         if isinstance(perform_action_result, pd.DataFrame) and not perform_action_result.empty:
             result_df = perform_action_result
-            # columns_to_drop = ['Sl_no', 'House_type', 'House_location']
-            # result_df.drop(columns=columns_to_drop, inplace=True)
+            columns_to_drop = ['Sl_no', 'House_type', 'House_location','House_image']
+            result_df.drop(columns=columns_to_drop, inplace=True)
+
+            column_mapping = {'House_name': 'name', 'House_price': 'price', 'House_Phone': 'Phone'}
+            result_df.rename(columns=column_mapping, inplace=True)
+            formatted_rows = result_df.to_string(index=False)
+
 
             column_names = result_df.columns.tolist()
-            formatted_column_names = ', '.join(column_names)
+            formatted_column_names = '| '.join(column_names)
+
+            formatted_column_names += '\n'
 
             formatted_rows = '\n'.join([', '.join(map(str, row)) for row in result_df.values])
 
             result_string = f"Available Homestays Details\n\n{formatted_column_names}\n{formatted_rows}\nEnter the Homestay NAME you want to book:"
+            
 
             return result_string, None
         else:
@@ -153,6 +163,9 @@ def getattributes(uinput, context, attributes):
                         print("Booking Date should be greater than today's date.")
                 except ValueError:
                     print("Checkin Date is not in dd/mm/yyyy format")
+
+        
+
         return attributes, uinput
 
 flag = 0
