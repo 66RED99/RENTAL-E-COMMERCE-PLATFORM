@@ -65,14 +65,13 @@ def check_actions(current_intent, attributes, context):
 
 
             column_names = result_df.columns.tolist()
-            formatted_column_names = '| '.join(column_names)
+            formatted_column_names = ' | '.join(column_names)
 
             formatted_column_names += '\n'
 
-            formatted_rows = '\n'.join([', '.join(map(str, row)) for row in result_df.values])
+            formatted_rows = '\n'.join(['• ' +', '.join(map(str, row)) for row in result_df.values])
 
-            result_string = f"Available Homestays Details\n\n{formatted_column_names}\n{formatted_rows}\nEnter the Homestay NAME you want to book:"
-            
+            result_string = f"Available Homestays Details: <br> <b>{formatted_column_names}:</b>\n--------------------------------\n\n{formatted_rows}\n--------------------------------\nEnter the Homestay NAME you want to book:"            
 
             return result_string, None
         else:

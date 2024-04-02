@@ -51,15 +51,18 @@ def bike_check_actions(current_intent, attributes, context):
         if isinstance(perform_action_result, pd.DataFrame) and not perform_action_result.empty:
             global bike_result_df
             bike_result_df = perform_action_result
-            # columns_to_drop = ['Sl_no', 'House_type', 'House_location']
-            # result_df.drop(columns=columns_to_drop, inplace=True)
+            columns_to_drop = ['Sl_no', 'latitude', 'longitude']
+            bike_result_df.drop(columns=columns_to_drop, inplace=True)
+            column_mapping = {'Bikestation_name': 'Name', 'Bikestation_location': 'Location'}
+            bike_result_df.rename(columns=column_mapping, inplace=True)
 
             column_names = bike_result_df.columns.tolist()
-            formatted_column_names = ', '.join(column_names)
+            formatted_column_names = ' | '.join(column_names)
 
-            formatted_rows = '\n'.join([', '.join(map(str, row)) for row in bike_result_df.values])
+            formatted_rows = '\n'.join(['• ' + ', '.join(map(str, row)) for row in bike_result_df.values])
 
-            result_string = f"Available Bikestation Details\n\n{formatted_column_names}\n{formatted_rows}\nEnter the Bikestation NAME you want to choose:"
+
+            result_string = f"<b>{formatted_column_names}:</b>\n--------------------------------\n{formatted_rows}\n--------------------------------\nEnter the Bikestation NAME you want to choose:"
 
             return result_string, None
         else:
@@ -206,12 +209,14 @@ class MySession:
                         choosed_bike_station = user_input.strip()  # Get the chosen bike station name
                         self.attributes['bike_station'] = choosed_bike_station
                         bikes_df = load_bikename_from_database('web_App_bike_detail', choosed_bike_station)  # Load bikes for the chosen bike station
-                        columns_to_drop = ['Sl_no', 'Bike_station', 'Bike_availability']
+                        columns_to_drop = ['Sl_no', 'Bike_station', 'Bike_availability','Bike_type','Bike_image']
                         bikes_df.drop(columns=columns_to_drop, inplace=True)
+                        column_mapping = {'Bike_name': 'Name', 'Bike_price': 'Price'}
+                        bikes_df.rename(columns=column_mapping, inplace=True)
                         if not bikes_df.empty:
 
                             column_names = bikes_df.columns.tolist()
-                            formatted_column_names = ', '.join(column_names)
+                            formatted_column_names = '| '.join(column_names)
 
                             formatted_rows = '\n'.join([', '.join(map(str, row)) for row in bikes_df.values])
 
