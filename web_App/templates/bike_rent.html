@@ -86,7 +86,6 @@ body {
     <a href="{% url 'user_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
     <a href="{% url 'book_homestay' %}" class="w3-bar-item w3-button w3-hover-white">Book Home Stay</a>
     <a href="{% url 'book_bike' %}" class="w3-bar-item w3-button w3-hover-white">Book Bikes</a>
-    <a href="{% url 'retrun_page' %}" class="w3-bar-item w3-button w3-hover-white">Return Bikes</a>
     <a href="{% url 'feedback_user' %}" class="w3-bar-item w3-button w3-hover-white">Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
 
@@ -103,8 +102,10 @@ body {
         <h2 >{{ k.Bike_name }}</h2>
         <h3>Type:</strong> {{ k.Bike_type }}</h3>
         <h3>Price:</strong> {{ k.Bike_price }}</h3>
-        <label for="selectDate" style="font-size: 20px;"><strong>Select Date:</strong></label>       
-        <input type="date" id="selectDate" name="selectDate" required>
+        <label for="selectDate" style="font-size: 20px;"><strong>Select Rent Date:</strong></label>       
+        <input type="date" id="selectDate" name="selectDate" required><br><br>
+        <label for="selectDate_" style="font-size: 20px;"><strong>Select Return Date:</strong></label>       
+        <input type="date" id="selectDate_" name="selectDate_" required>
         <p><button style="margin-top:50px;width: 50%; margin-left: 220px;" type="submit">Rent this bike</Select></button></p>
     </div>
     </form>

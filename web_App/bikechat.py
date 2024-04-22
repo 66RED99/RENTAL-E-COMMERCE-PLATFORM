@@ -61,7 +61,6 @@ def bike_check_actions(current_intent, attributes, context):
 
             formatted_rows = '\n'.join(['• ' + ', '.join(map(str, row)) for row in bike_result_df.values])
 
-
             result_string = f"<b>{formatted_column_names}:</b>\n--------------------------------\n{formatted_rows}\n--------------------------------\nEnter the Bikestation NAME you want to choose:"
 
             return result_string, None
@@ -218,9 +217,9 @@ class MySession:
                             column_names = bikes_df.columns.tolist()
                             formatted_column_names = '| '.join(column_names)
 
-                            formatted_rows = '\n'.join([', '.join(map(str, row)) for row in bikes_df.values])
+                            formatted_rows = '\n'.join(['• ' +', '.join(map(str, row)) for row in bikes_df.values])
 
-                            prompt = f"Available Bike in selected bike station:\n\n{formatted_column_names}\n{formatted_rows}\nEnter the Bikename you want to book:"
+                            prompt = f"<b>{formatted_column_names}:</b>\n--------------------------------\n{formatted_rows}\n--------------------------------\nEnter the Bikename you want to book:"
 
                             self.var = 1
                         else:
@@ -228,10 +227,10 @@ class MySession:
                             self.flag = 0  # Reset flag for next interaction
                     else:
                         choosed_bikename = user_input.strip()
-                        with open('bike_booking_info.txt', 'a') as f:
-                            f.write(f"Bike Name: {choosed_bikename}, Bike Station: {self.attributes.get('bike_station', 'N/A')}, Check-in Date: {self.attributes.get('checkin', 'N/A')}\n")
+                        with open('bike_booking_info.txt', 'w') as f:
+                            f.write(f"Bike Name: {choosed_bikename}, Bike Station: {self.attributes.get('bike_station', 'N/A')},Nights: {self.attributes.get('nights', 'N/A')}, Check-in Date: {self.attributes.get('checkin', 'N/A')}\n")
                         
-                        add_to_table(choosed_bikename,{self.attributes.get('bike_station', 'N/A')},{self.attributes.get('checkin', 'N/A')})
+                        # add_to_table(choosed_bikename,{self.attributes.get('bike_station', 'N/A')},{self.attributes.get('checkin', 'N/A')})
                         
                         prompt = "Booked successfully!"
                         self.context = IntentComplete()  # Mark intent as complete after booking

@@ -14,16 +14,14 @@ from .generatengrams import ngrammatch
 def load_data_from_database(table_name):
     # Connect to SQLite database
     conn = sqlite3.connect('db.sqlite3')
-
+    
     # Execute query to fetch data from table
     query = f"SELECT * FROM '{table_name}'"
     df = pd.read_sql_query(query, conn)
-
+    
     # Close connection
     conn.close()
-
     
-
     return df
 
 
@@ -162,9 +160,6 @@ def getattributes(uinput, context, attributes):
                         print("Booking Date should be greater than today's date.")
                 except ValueError:
                     print("Checkin Date is not in dd/mm/yyyy format")
-
-        
-
         return attributes, uinput
 
 flag = 0

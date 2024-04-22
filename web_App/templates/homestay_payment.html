@@ -124,42 +124,28 @@ body {
     <a href="{% url 'user_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
     <a href="{% url 'book_homestay' %}" class="w3-bar-item w3-button w3-hover-white">Book Home Stay</a>
     <a href="{% url 'book_bike' %}" class="w3-bar-item w3-button w3-hover-white">Book Bikes</a>
-    <a href="{% url 'retrun_page' %}" class="w3-bar-item w3-button w3-hover-white">Return Bikes</a>
     <a href="{% url 'feedback_user' %}" class="w3-bar-item w3-button w3-hover-white">Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
   </div>
 </nav>
 <h1 style="text-align: center;margin-left: 250px;color: #007bff;">HOME STAY</h1>
 {% for k in home_stay %}
-<form  id="bike_" action="{% url 'payment_homestay' %}" method="post" enctype="multipart/form-data" >
+<form  id="bike_" action="{% url 'pay_page' %}" method="post" enctype="multipart/form-data" >
     {% csrf_token %}
     <div class="card">
-        <input type="hidden" value="{{ k.House_name }}" name="name" id="name">
+        <input type="hidden" value="{{ k.Home_stay }}" name="homestay" id="homestay">
+        <input type="hidden" value="{{ k.Room_name }}" name="room" id="room">
         <input type="hidden" min="1" id="total_rent" name="total_rent" value="{{rent}}" >
         <input type="hidden" id="check_in_day" name="check_in_day"  value="{{check_in}}">
         <input type="hidden" id="check_out_day" name="check_out_day"  value="{{check_out}}">
-        <h2 >{{ k.House_name }}</h2>
-        <p><strong>Type:</strong> {{ k.House_type }}</p>
-        <p><strong>Location:</strong> {{ k.House_location }}</p>
-        <p><strong>Home Stay Rent:</strong> {{ k.House_price }}</p>
-        <p><strong>Home Stay PhoneNumber:</strong> {{ k.House_Phone }}</p>
+        <h2 >{{ k.Home_stay }}</h2>
+        <h3>{{ k.Room_name }}</h3>
+        <p><strong>Type:</strong> {{ k.Room_type }}</p>
+        <p><strong>Daily_rent:</strong> {{ k.Price }}</p>
         <p><strong>Check-in-Day:</strong>{{check_in}}</p>
         <p><strong>Check-out-Day:</strong>{{check_out}}</p>
         <p><strong>Total Rent:</strong>{{rent}}</p>
-        <div class="card-details-container">
-            <h3>Card Details:</h3>
-            <label for="card_number">Card Number:</label>
-            <input type="number" id="card_number" max="999999999999" name="card_number" placeholder="Enter your card number" required>
-            
-            <label for="expiry_date">Expiry Date:</label>
-            <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" required>
-            
-            <label for="cvv">CVV:</label>
-            <input type="number" id="cvv" name="cvv"  max="999" placeholder="Enter CVV" required>
-            
-        
-        </div>
-        <p><button type="submit">Payment</Select></button></p>
+        <p><button type="submit">Book Confirm</Select></button></p>
     </div>
     </form>
   {% endfor %}

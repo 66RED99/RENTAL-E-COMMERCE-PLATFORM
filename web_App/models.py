@@ -24,9 +24,9 @@ class Homestay_details(models.Model):
     House_name = models.CharField(max_length=255)
     House_type = models.CharField(max_length=255)
     House_location = models.CharField(max_length=255)
-    House_price = models.IntegerField()
     House_Phone = models.IntegerField()
     House_image = models.ImageField(upload_to='homestay_images/', blank=True, null=True)
+
 
 class Bikestation_details(models.Model):
     Sl_no = models.IntegerField(primary_key=True)
@@ -34,6 +34,14 @@ class Bikestation_details(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     Bikestation_location = models.CharField(max_length=255)
+
+class Room_details(models.Model):
+    Sl_no = models.IntegerField(primary_key=True)
+    Home_stay = models.CharField(max_length=255)
+    Room_name = models.CharField(max_length=255)
+    Room_type = models.CharField(max_length=255)
+    Price = models.IntegerField()
+    Discription = models.CharField(max_length=255)
 
 class Bike_books(models.Model):
     Sl_no = models.IntegerField(primary_key=True)
@@ -46,10 +54,11 @@ class Bike_books(models.Model):
     Status = models.CharField(max_length=255,default="On Rent")
     total_amout = models.IntegerField(default=0)
 
-class Home_book(models.Model):
+class Home_book1(models.Model):
     Sl_no = models.IntegerField(primary_key=True)
     User_name =  models.CharField(max_length=255)
     Name =  models.CharField(max_length=255)
+    Room_name = models.CharField(max_length=255)
     Location =  models.CharField(max_length=255)
     Check_in =  models.CharField(max_length=255)
     Ckeck_out =  models.CharField(max_length=255)

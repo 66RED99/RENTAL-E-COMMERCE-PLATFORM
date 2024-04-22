@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,date
 import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -30,21 +30,37 @@ def book_bike(request):
 def manage_page(request):
     result1 = Bike_detail.objects.all()
     result2 = Homestay_details.objects.all()
-    results_ = {'result1': result1,'result2': result2}
+    result3 = Bikestation_details.objects.all()
+    result4 = Room_details.objects.all()
+    results_ = {'result1': result1,'result2': result2,"result3":result3,"result4":result4}
     return render(request, "manage.html",results_)
 
 def manage_booking(request):
     result1 = Bike_books.objects.all()
-    result2 = Home_book.objects.all()
+    result2 = Home_book1.objects.all()
     results_ = {'result1': result1,'result2': result2}
     return render(request, "book_manage.html",results_)
 
+def manage_booking_(request):
+    username = request.session["user_name_"]
+    result1 = Bike_books.objects.filter(User_name=username).order_by('-Sl_no')
+    result2 = Home_book1.objects.filter(User_name=username).order_by('-Sl_no')
+    today = date.today()    
+    today_ = today.strftime('%Y-%m-%d')
+    print(today_)
+    results_ = {'result1': result1,'result2': result2,'today':today_}
+    return render(request, "book_management.html",results_)
 
 
 def bike_page(request):
     bike_station = Bikestation_details.objects.all()
     bike_stations= {'bike_station_': bike_station}
     return render(request, "bike.html",bike_stations)
+
+def room_page(request):
+    home_stay = Homestay_details.objects.all()
+    home_stays= {'home_stay_': home_stay}
+    return render(request, "room.html",home_stays)
 
 def prediction_page(request):
     bikes = Bike_detail.objects.all()
@@ -153,7 +169,7 @@ def adding_homestay(request):
     obj.save()
     file_path = 'Web_app/entities/House_location.dat'
     add_place(file_path, location)
-    return HttpResponse("<script>window.location.href='/house_page/';alert('HomeStay added successfully')</script>")
+    return HttpResponse("<script>window.location.href='/house_page/';alert('HomeStay added sucessfully')</script>")
 
 def adding_bikes(request):
     station = request.POST.get("bikestation")
@@ -188,6 +204,17 @@ def adding_bikes(request):
     obj.save()
     return HttpResponse("<script>window.location.href='/bike_page/';alert('Bike added sucessfully')</script>")
 
+def adding_homes(request):
+    homestay = request.POST.get("homestay")
+    roomname = request.POST.get("roomname")
+    roomtype = request.POST.get("roomType")
+    price = request.POST.get("roomPrice")
+    dicsription = request.POST.get("roomDescription")
+    obj = Room_details(Home_stay=homestay, Room_name=roomname, Room_type=roomtype, Price=price, Discription= dicsription)
+    obj.save()
+    return HttpResponse("<script>window.location.href='/room_page/';alert('Rooms added sucessfully')</script>")
+
+
 def adding_bikestation(request):
     station_name = request.POST.get("stationName")
     long = request.POST.get("longitude")
@@ -219,33 +246,100 @@ def delete_bike(request):
     bike_delete.delete()
     return HttpResponse("<script>window.location.href='/manage_page/'</script>")
 
+def edit_bikestation(request):
+    sl_no = request.POST.get("sl_no")
+    station = request.POST.get("station")
+    old_station = request.POST.get("old")
+    lat = request.POST.get("lat")
+    log = request.POST.get("log")
+    loc = request.POST.get("loc")
+    bike_edit_ = Bikestation_details.objects.get(Sl_no=int(sl_no))
+    bike_edit_.Bikestation_name = station
+    bike_edit_.latitude = lat
+    bike_edit_.longitude = log
+    bike_edit_.Bikestation_location = loc
+    bike_edit_.save()
+    bikes_to_update = Bike_detail.objects.filter(Bike_station=old_station)
+    for bike in bikes_to_update:
+        bike.Bike_station = station
+        bike.save()
+
+    return HttpResponse("<script>window.location.href='/manage_page/'</script>")
+
+
+def delete_bikestation(request):
+    sl_no = request.POST.get("hide")
+    bike_delete = Bikestation_details.objects.get(Sl_no=int(sl_no))
+    bike_delete.delete()
+    old_station = request.POST.get("old_")
+    bikes_to_delete = Bike_detail.objects.filter(Bike_station=old_station)
+    bikes_to_delete.delete()
+    return HttpResponse("<script>window.location.href='/manage_page/'</script>")
+
 def edit_homestay(request):
     sl_no = request.POST.get("sl_no")
     name = request.POST.get("name")
     type_ = request.POST.get("type")
     location = request.POST.get("location")
-    price = request.POST.get("price")
     ph_no = request.POST.get("ph_no")
+    old = request.POST.get("old")
     hom_edit = Homestay_details.objects.get(Sl_no=int(sl_no))
     hom_edit.House_name = name
     hom_edit.House_type = type_
     hom_edit.House_location = location
-    hom_edit.House_price = price
     hom_edit.House_Phone = ph_no
     hom_edit.save()
+    home_to_update = Room_details.objects.filter(Home_stay=old)
+    for home in home_to_update:
+        home.Home_stay = name
+        home.save()
     return HttpResponse("<script>window.location.href='/manage_page/'</script>")
 
+def cancel1(request):
+    sl_no = request.POST.get("hide")
+    fly_delete = Bike_books.objects.get(Sl_no=int(sl_no))
+    fly_delete.delete()
+    return HttpResponse("<script>window.location.href='/manage_booking_/'</script>")
+def cancel2(request):
+    sl_no = request.POST.get("hide")
+    fly_delete = Home_book1.objects.get(Sl_no=int(sl_no))
+    fly_delete.delete()
+    return HttpResponse("<script>window.location.href='/manage_booking_/'</script>")
 
 def delete_homestay(request):
     sl_no = request.POST.get("hide")
     fly_delete = Homestay_details.objects.get(Sl_no=int(sl_no))
+    fly_delete.delete()
+    name = request.POST.get("old_")
+    home_to_delete = Room_details.objects.filter(Home_stay=name)
+    home_to_delete.delete()
+    return HttpResponse("<script>window.location.href='/manage_page/'</script>")
+
+def edit_room(request):
+    sl_no = request.POST.get("sl_no")
+    room = request.POST.get("room")
+    room_type = request.POST.get("type")
+    price = request.POST.get("price")
+    discription = request.POST.get("dis")
+    room_edit = Room_details.objects.get(Sl_no=int(sl_no))
+    room_edit.Room_name = room
+    room_edit.Room_type = room_type
+    room_edit.Price = price
+    room_edit.Discription = discription
+    room_edit.save()
+    return HttpResponse("<script>window.location.href='/manage_page/'</script>")
+
+
+def delete_room(request):
+    sl_no = request.POST.get("hide")
+    fly_delete = Room_details.objects.get(Sl_no=int(sl_no))
     fly_delete.delete()
     return HttpResponse("<script>window.location.href='/manage_page/'</script>")
 
 def bike(request):
     station_name = request.POST.get("name")
     print(station_name)
-    bike_detail = list(Bike_detail.objects.filter(Bike_station=station_name,Bike_availability="Available").values())
+    bike_detail = list(Bike_detail.objects.filter(Bike_station=station_name).values())
     print(bike_detail)
     bike_details= {'bike_detail': bike_detail}
     return render(request, "bikes.html",bike_details)
@@ -262,19 +356,41 @@ def bike_rent(request):
     bike_name = request.POST.get("name")
     username = request.session["user_name_"]
     bike_station = request.POST.get("station")
-    print(bike_name)
-    bike_detail = Bike_detail.objects.get(Bike_name=bike_name,Bike_station=bike_station)
-    bike_status = Bike_detail.objects.get(Bike_name=bike_name,Bike_station=bike_station)
-    bike_status.Bike_availability = "Rent"
-    bike_status.save()
-    station=bike_detail.Bike_station
-    bikename = bike_detail.Bike_name
-    rent = bike_detail.Bike_price
     rent_date = request.POST.get("selectDate")
-    print(rent_date)
-    obj = Bike_books(User_name=username,Bikestation_name=station, Bike_name=bikename, Bike_price=rent, Rent_date=rent_date)
+    retun_date = request.POST.get("selectDate_")
+    print(rent_date,retun_date)
+    rent_date_ = datetime.strptime(rent_date, '%Y-%m-%d')
+    return_date = datetime.strptime(retun_date, '%Y-%m-%d')
+    rent_date_only = rent_date_.date()
+    return_date_only = return_date.date()
+    bookings = Bike_books.objects.filter(Bikestation_name=bike_station, Bike_name=bike_name)
+    bike_detail = Bike_detail.objects.get(Bike_station=bike_station, Bike_name=bike_name)
+    print(bike_detail)
+    rent = bike_detail.Bike_price
+    print(rent_date_only)
+    print(return_date_only)
+    days = days_between_dates(str(rent_date_only),str(return_date_only))
+    print(days)
+    total_rent = int(rent)*int(days)
+    print(total_rent)
+    data = list(Bike_detail.objects.filter(Bike_station=bike_station,Bike_name=bike_name).values())
+    bike_ ={'bike_': data,"price":total_rent,"return":retun_date,'rent':rent_date}
+    return render(request, "demo_payment.html",bike_)
+
+def payment_bike(request):
+    username = request.session["user_name_"]
+    bike_name = request.POST.get("name")
+    bike_station = request.POST.get("station")
+    date = request.POST.get("date")
+    rent_date=request.POST.get("rent_date")
+    price = request.POST.get("price")
+    bike_detail = Bike_detail.objects.get(Bike_station=bike_station, Bike_name=bike_name)
+    print(bike_detail)
+    rent = bike_detail.Bike_price
+    obj = Bike_books(User_name=username, Bikestation_name=bike_station, Bike_name=bike_name, Rent_date=rent_date, Return_date=date,total_amout=int(price),Bike_price=int(rent))
     obj.save()
-    return HttpResponse("<script>window.location.href='/user_page/';alert('Booking Sucessfull')</script>")
+    return HttpResponse("<script>window.location.href='/user_page/';alert('Payment Sucessfull')</script>")
+
 def add_to_table(bike_name,bike_station,rent_date):
     print(bike_name,str(bike_station),str(rent_date))
     bike_station = str(bike_station)
@@ -313,50 +429,83 @@ def return_bike(request):
     print(days)
     total_rent = int(rent)*int(days)
     print(total_rent)
-    data = list(Bike_books.objects.filter(Bikestation_name=bike_station,Bike_name=bike_name,User_name=username,Status="On Rent").values())
+    data = list(Bike_detail.objects.filter(Bikestation_name=bike_station,Bike_name=bike_name).values())
     bike_ ={'bike_': data,"price":total_rent,"return":return_date}
     return render(request, "demo_payment.html",bike_)
 
 def demo_payment(request):
-    username = request.session["user_name_"]
     bike_name = request.POST.get("name")
+    username = request.session["user_name_"]
     bike_station = request.POST.get("station")
-    date = request.POST.get("date")
-    rent_date=request.POST.get("rent_date")
-    print(rent_date)
-    price = request.POST.get("price")
-    print(bike_station,bike_name,date,price)
-    bike_detail = Bike_books.objects.get(Bikestation_name=bike_station, Bike_name=bike_name,User_name=username,Rent_date=rent_date,Status ="On Rent")
-    bike_detail.total_amout = price
-    bike_detail.Status = "Available"
-    bike_detail.Return_date = date
-    bike_detail.save()
-    data = Bike_detail.objects.get(Bike_station=bike_station, Bike_name=bike_name)
-    data.Bike_availability = "Available"
-    data.save()
-    return HttpResponse("<script>window.location.href='/user_page/';alert('Payment Sucessfull')</script>")
+    rent_date = request.POST.get("rent_date")
+    retun_date = request.POST.get("date")
+    rent = request.POST.get("price")
+    
+    data = list(Bike_detail.objects.filter(Bike_station=bike_station,Bike_name=bike_name).values())
+    bike_ ={'bike_': data,"price":rent,"return":retun_date,'rent':rent_date}
+    return render(request, "payment1.html",bike_)
+    
 
 def select_homestay(request):
-    home_stay = request.POST.get("name")
-    home_stay_details = list(Homestay_details.objects.filter(House_name=home_stay).values())
+    home_stay = request.POST.get("homestay")
+    room_name = request.POST.get("room")
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay,Room_name=room_name).values())
     home_stays= {'home_stay': home_stay_details}
     return render(request, "home_stay_selection.html",home_stays)
 
-def book_homestay_(request):
+def select_room(request):
     home_stay = request.POST.get("name")
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay).values())
+    home_stays= {'home_stay': home_stay_details}
+    return render(request, "room_selection.html",home_stays)
+
+def book_homestay_(request):
+    home_stay = request.POST.get("homestay")
+    room_name = request.POST.get("room")
     checkin_day = request.POST.get("check_in_day")
     days = request.POST.get("num_nights")
-    home_stay_details = list(Homestay_details.objects.filter(House_name=home_stay).values())
-    home__ = Homestay_details.objects.get(House_name=home_stay)
-    rent = home__.House_price
+    
+
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay,Room_name=room_name).values())
+    home__ = Room_details.objects.get(Home_stay=home_stay,Room_name=room_name)
+    rent = home__.Price
     total_rent = int(rent) * int(days)
     check_out = calculate_date_after_days(str(checkin_day),int(days))
+    rent_date = datetime.strptime(checkin_day, '%Y-%m-%d')
+    return_date = datetime.strptime(check_out, '%Y-%m-%d')
+        
+    bookings = Home_book1.objects.filter(Name=home_stay)
+
     home_stays= {'home_stay': home_stay_details,'check_in':checkin_day,'check_out':check_out,'rent':total_rent}
     return render(request, "homestay_payment.html",home_stays)
 
+def book_homestay__(request):
+    home_stay = request.POST.get("homestay")
+    room_name = request.POST.get("room")
+    checkin_day = request.POST.get("checkin")
+    checkout = request.POST.get("checkout")
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay,Room_name=room_name).values())
+    home__ = Room_details.objects.get(Home_stay=home_stay,Room_name=room_name)
+    rent = home__.Price
+    days = days_between_dates(str(checkin_day),str(checkout))
+    total_rent = int(rent) * int(days)
+    home_stays= {'home_stay': home_stay_details,'check_in':checkin_day,'check_out':checkout,'rent':total_rent}
+    return render(request, "homestay_payment.html",home_stays)
+
+def pay_page(request):
+    home_stay = request.POST.get("homestay")
+    room_name = request.POST.get("room")
+    checkin_day = request.POST.get("check_in_day")
+    rent = request.POST.get("total_rent")
+    checkout_day = request.POST.get("check_out_day")
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay,Room_name=room_name).values())
+    home_stays= {'home_stay': home_stay_details,'check_in':checkin_day,'check_out':checkout_day,'rent':rent}
+    return render(request, "payment_page.html",home_stays)
+
 def payment_homestay(request):
     username = request.session["user_name_"]
-    home_stay = request.POST.get("name")
+    home_stay = request.POST.get("homestay")
+    room_name = request.POST.get("room")
     checkin_day = request.POST.get("check_in_day")
     rent = request.POST.get("total_rent")
     checkout_day = request.POST.get("check_out_day")
@@ -364,7 +513,7 @@ def payment_homestay(request):
     type = home_stay_.House_type
     location = home_stay_.House_location
     print(username,home_stay,location,checkin_day,checkout_day,rent,type)
-    obj = Home_book(User_name=username,Name=home_stay, Location=location, Check_in=checkin_day, Ckeck_out=checkout_day,Rent=rent , Type=type)
+    obj = Home_book1(User_name=username,Room_name=room_name,Name=home_stay, Location=location, Check_in=checkin_day, Ckeck_out=checkout_day,Rent=rent , Type=type)
     obj.save()
     return HttpResponse("<script>window.location.href='/user_page/';alert('Payment Sucessfull')</script>")
 
@@ -388,15 +537,37 @@ def book_homestay_bot(request):
     print("Number of Nights:", number_of_nights)
     print("Check-in Date:", formatted_date)
 
-    home_stay_details = list(Homestay_details.objects.filter(House_name=homestay_name).values())
-    home__ = Homestay_details.objects.get(House_name=homestay_name)
-    rent = home__.House_price
+    home_stay_details = list(Room_details.objects.filter(Home_stay=homestay_name).values())
+    home__ = Room_details.objects.get(Home_stay=homestay_name)
+    check_out = calculate_date_after_days(str(formatted_date),int(number_of_nights))
+    home_stays= {'home_stay': home_stay_details,'check_in':formatted_date,'check_out':check_out}
+    return render(request, "bot.html",home_stays)
+
+def book_bike_bot(request):
+    # Open the file in read mode
+    with open('bike_booking_info.txt', 'r') as file:
+        # Read the line containing the details
+        details = file.readline().strip()
+
+    details_list = details.split(',')
+
+    bike_name = details_list[0].split(':')[1].strip()
+    station = details_list[1].split(':')[1].strip()
+    number_of_nights = int(details_list[2].split(':')[1].strip())
+    check_in_date = details_list[3].split(':')[1].strip()
+    date_object = datetime.strptime(check_in_date, '%d/%m/%Y')
+    formatted_date = date_object.strftime('%Y-%m-%d')
+    print("bike Name:", bike_name)
+    print("Number of Nights:", station)
+    print("Check-in Date:", formatted_date)
+
+    home_stay_details = list(Bike_detail.objects.filter(Bike_station=station,Bike_name=bike_name).values())
+    home__ = Bike_detail.objects.get(Bike_station=station,Bike_name=bike_name)
+    rent = home__.Bike_price
     total_rent = int(rent) * int(number_of_nights)
     check_out = calculate_date_after_days(str(formatted_date),int(number_of_nights))
-    home_stays= {'home_stay': home_stay_details,'check_in':formatted_date,'check_out':check_out,'rent':total_rent}
-    return render(request, "homestay_payment.html",home_stays)
-
-
+    bike_ ={'bike_': home_stay_details,"price":total_rent,"return":check_out,'rent':formatted_date}
+    return render(request, "demo_payment.html",bike_)
 
 # views.py
 
@@ -411,7 +582,7 @@ def booking_analytics(request):
     spice_co=[]
     ##################################################################################################
    
-    co1 = Home_book.objects.all().values()
+    co1 = Home_book1.objects.all().values()
     co1 = list(co1)
     names = [entry['Name'] for entry in co1]
     name_counts = Counter(names)
@@ -655,6 +826,7 @@ def get_response1(request):
             if 'df' in response:
                 dataframe = response['df']
                 dataframe_html = dataframe.to_html()
+                print( response['text'])
             
             return JsonResponse({'response': response['text'], 'dataframe': dataframe_html})
     return JsonResponse({'error': 'Invalid request'})

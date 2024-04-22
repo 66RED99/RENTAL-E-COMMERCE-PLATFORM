@@ -91,12 +91,12 @@ body {
 <form  id="bike_" action="{% url 'book_homestay_' %}" method="post" enctype="multipart/form-data" >
     {% csrf_token %}
     <div class="card">
-        <input type="hidden" value="{{ k.House_name }}" name="name" id="name">
-        <h2 >{{ k.House_name }}</h2>
-        <p><strong>Type:</strong> {{ k.House_type }}</p>
-        <p><strong>Location:</strong> {{ k.House_location }}</p>
-        <p><strong>Home Stay Rent:</strong> {{ k.House_price }}</p>
-        <p><strong>Home Stay PhoneNumber:</strong> {{ k.House_Phone }}</p>
+        <input type="hidden" value="{{ k.Home_stay }}" name="homestay" id="homestay">
+        <input type="hidden" value="{{ k.Room_name }}" name="room" id="room">
+        <h2 >{{ k.Room_name }}</h2>
+        <p><strong>Type:</strong> {{ k.Room_type }}</p>
+        <p><strong>Rent Per Night:</strong> {{ k.Price }}</p>
+        <p><strong>Discription:</strong> {{ k.Discription }}</p>
         <p><strong>
             <label for="num_nights">Number of Nights:</label></strong>
             <input type="number" min="1" id="num_nights" name="num_nights" required>

@@ -1,0 +1,543 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>WanderWheels & Homesteads</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+.card {
+              box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+              transition: 0.3s;
+              margin-left: 380px;
+              margin-right: 380px;
+            }
+
+            .card:hover {
+              box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            }
+
+</style>
+<link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+</head>
+<body>
+
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
+    <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
+    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home Stay</a>
+    <a href="{% url 'room_page' %}"  class="w3-bar-item w3-button w3-hover-white">Rooms</a>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
+    <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+    <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Homestay</a>
+    <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Bike</a>
+    <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
+    <a href="{% url 'prediction_page' %}" class="w3-bar-item w3-button w3-hover-white">Prediction</a>
+    <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
+    <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
+
+
+  </div>
+</nav>
+<h1 style="text-align: center;">Hotel Name</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart1" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart2" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<h1 style="text-align: center;">Location</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart3" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart4" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<h1 style="text-align: center;">Month</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart5" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart6" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<h1 style="text-align: center;">Hotel Type</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart7" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart8" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<h1 style="text-align: center;">Session</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart10" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart11" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<h1 style="text-align: center;">Days</h1>
+<div class="container">
+  <div class="row">
+    <div class="card">
+      <div class="card-body d-flex align-items-center justify-content-center">
+        <canvas id="myChart9" style="max-width: 600px;"></canvas>
+      </div>
+    </div>
+</div>
+</div>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k1|safe }};
+  var yValues = {{ k2|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart1", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k1|safe }};
+  var yValues = {{ k2|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart2", {
+    type: "pie", // Change chart type to pie
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: pieColors,
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k3|safe }};
+  var yValues = {{ k4|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart3", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k3|safe }};
+  var yValues = {{ k4|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart4", {
+    type: "pie", // Change chart type to pie
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: pieColors,
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k5|safe }};
+  var yValues = {{ k6|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart5", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k5|safe }};
+  var yValues = {{ k6|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart6", {
+    type: "pie", // Change chart type to pie
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: pieColors,
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k7|safe }};
+  var yValues = {{ k8|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart7", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k7|safe }};
+  var yValues = {{ k8|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart8", {
+    type: "pie", // Change chart type to pie
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: pieColors,
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k9|safe }};
+  var yValues = {{ k10|safe }};
+  
+  var lineColor = 'green'; // Set color for the line
+  
+  new Chart("myChart9", {
+    type: "line", // Change chart type to line
+    data: {
+      labels: xValues,
+      datasets: [{
+        label: 'Data', // Add label for the dataset
+        borderColor: lineColor,
+        backgroundColor: 'transparent', // Set background color to transparent
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k11|safe }};
+  var yValues = {{ k12|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart10", {
+    type: "bar",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues
+      }]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true // Ensure the y-axis starts at 0
+          }
+        }]
+      }
+    }
+  });
+</script>
+<script>
+  {{ k1|safe }}.forEach(item => {
+    // alert(item)
+  })
+
+  var xValues = {{ k11|safe }};
+  var yValues = {{ k12|safe }};
+  
+  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+
+  new Chart("myChart11", {
+    type: "pie", // Change chart type to pie
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: pieColors,
+        data: yValues
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Inventory"
+      },
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
+
+

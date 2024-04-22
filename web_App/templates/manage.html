@@ -105,32 +105,68 @@ body {
     <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
     <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
     <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
-    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">House</a>
+    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home Stay</a>
+    <a href="{% url 'room_page' %}"  class="w3-bar-item w3-button w3-hover-white">Rooms</a>
     <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
     <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+    <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Homestay</a>
+    <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Bike</a>
     <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
+    <a href="{% url 'prediction_page' %}" class="w3-bar-item w3-button w3-hover-white">Prediction</a>
     <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
 
+
   </div>
 </nav>
+<div style="margin-top: 100px;"></div>
+<h1 style="text-align: center;color: red;margin-top: 100px;">Bike Station</h1>
+<table style="margin-top: 50px;margin-left: 500px;width: 50%;" class="patient">
+    <tr>
+      <th>Bikestation_name</th>
+      <th>Longitude</th>
+      <th>Latitude</th>
+      <th>Bikestation_location</th>
+
+    </tr>
+    {% for j in result3 %}
+    <tr>
+      <form action="{% url 'edit_bikestation' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
+      <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
+      <input type="hidden" value="{{ j.Bikestation_name }}" name="old" id="old">
+      <td><input type="text" value="{{ j.Bikestation_name }}" id="station" name="station" required></td>
+      <td><input type="text" value="{{ j.latitude }}" id="lat" name="lat" required></td>
+      <td><input type="text" value="{{ j.longitude }}" id="log" name="log" required></td>
+      <td><input type="text" value="{{ j.Bikestation_location }}" id="loc" name="loc" required></td>
+      <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
+      </form >
+      <form  action="{% url 'delete_bikestation' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
+          <input type="hidden" value="{{ j.Sl_no }}" name="hide" id="hide">
+          <input type="hidden" value="{{ j.Bikestation_name }}" name="old_" id="old_">
+          <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>DELETE</b></button></td>
+      </form>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<div style="margin-top: 100px;"></div>
 <h1 style="text-align: center;color: red;margin-top: 100px;">Bikes</h1>
 <table style="margin-top: 50px;margin-left: 500px;width: 50%;" class="patient">
     <tr>
       <th>Bike_station</th>
       <th>Bike_name</th>
       <th>Bike_type</th>
-      <th>Bike_price</th>
+      <th>bike_price</th>
 
     </tr>
     {% for j in result1 %}
     <tr>
       <form action="{% url 'edit_bike' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
       <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
-      <td><input type="text" value="{{ j.Bike_station }}" id="station" name="station" required></td>
+      <td><label id="station" name="station">{{ j.Bike_station }}</label></td>
       <td><input type="text" value="{{ j.Bike_name }}" id="name" name="name" required></td>
       <td><input type="text" value="{{ j.Bike_type }}" id="type" name="type" required></td>
-      <td><input type="number" value="{{ j.Bike_price }}" class="price" name="price" required></td>
+      <td><input type="text" value="{{ j.Bike_price }}" id="price" name="price" required></td>
       <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
       </form >
       <form  action="{% url 'delete_bike' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
@@ -148,26 +184,59 @@ body {
       <th>Home_Stay</th>
       <th>Type</th>
       <th>Location</th>
-      <th>Price</th>
       <th>Phone Number</th>
     </tr>
     {% for j in result2 %}
     <tr>
     <form action="{% url 'edit_homestay' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
     <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
+    <input type="hidden" value="{{ j.House_name }}" name="old" id="old">
     <td><input type="text" value="{{ j.House_name }}" id="name" name="name" required></td>
     <td><input type="text" value="{{ j.House_type }}" id="type" name="type" required></td>
     <td><input type="text" value="{{ j.House_location }}" id="location" name="location" required></td>
-    <td><input type="text" value="{{ j.House_price }}" class="price" name="price" required></td>
     <td><input type="text" value="{{ j.House_Phone }}" class="ph_no" name="ph_no" required></td>
     <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
     </form >
     <form  action="{% url 'delete_homestay' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
         <input type="hidden" value="{{ j.Sl_no }}" name="hide" id="hide">
+        <input type="hidden" value="{{ j.House_name }}" name="old_" id="old_">
         <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>DELETE</b></button></td>
     </form>
   </tr>
   {% endfor %}
+</table>
+</div>
+<div style="margin-top: 100px;"></div>
+<h1 style="text-align: center;color: red;margin-top: 100px;">Bike Station</h1>
+<table style="margin-top: 50px;margin-left: 500px;width: 50%;" class="patient">
+    <tr>
+      <th>Home_stay</th>
+      <th>Room_Name</th>
+      <th>Room_type</th>
+      <th>Price</th>
+     <th>Discription</th> 
+
+    </tr>
+    {% for j in result4 %}
+    <tr>
+      <form action="{% url 'edit_room' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}
+      <input type="hidden" value="{{ j.Sl_no }}" name="sl_no" id="sl_no">
+      <input type="hidden" value="{{ j.Home_stay }}" name="old" id="old">
+      <td><label id="hmoe" name="home">{{ j.Home_stay }}</label></td>
+      <td><input type="text" value="{{ j.Room_name }}" id="room" name="room" required></td>
+      <td><input type="text" value="{{ j.Room_type }}" id="type" name="type" required></td>
+      <td><input type="text" value="{{ j.Price }}" id="price" name="price" required></td>
+      <td><input type="text" value="{{ j.Discription }}" id="dis" name="dis" required></td>
+
+      <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>EDIT</b></button></td>
+      </form >
+      <form  action="{% url 'delete_room' %}" method="post" enctype="multipart/form-data" >{% csrf_token %}>
+          <input type="hidden" value="{{ j.Sl_no }}" name="hide" id="hide">
+          <input type="hidden" value="{{ j.Home_stay }}" name="old_" id="old_">
+          <td><button  type="submit" class="btn" style="background-color:lightblue;color:black;"><b>DELETE</b></button></td>
+      </form>
+    </tr>
+    {% endfor %}
 </table>
 
 </body>
