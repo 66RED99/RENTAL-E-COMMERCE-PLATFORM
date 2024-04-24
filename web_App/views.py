@@ -138,7 +138,6 @@ def adding_homestay(request):
     name = request.POST.get("propertyName")
     type = request.POST.get("propertyType")
     location = request.POST.get("propertyLocation")
-    price = request.POST.get("propertyPrice")
     ph_no = request.POST.get("phnno")
     home_image = request.FILES.get("homeImage")  # Get the uploaded image file
 
@@ -157,12 +156,11 @@ def adding_homestay(request):
         home_image_path = default_storage.save(image_path, file_content)
         home_image_path = home_image_path
 
-    print(name, type, location, price, ph_no)
+    print(name, type, location,ph_no)
     obj = Homestay_details(
         House_name=name,
         House_type=type,
         House_location=location,
-        House_price=price,
         House_Phone=ph_no,
         House_image=home_image_path  # Store the uploaded image file object
     )
