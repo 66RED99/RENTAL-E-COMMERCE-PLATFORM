@@ -511,7 +511,7 @@ def payment_homestay(request):
     type = home_stay_.House_type
     location = home_stay_.House_location
     print(username,home_stay,location,checkin_day,checkout_day,rent,type)
-    obj = Home_book1(User_name=username,Room_name=room_name,Name=home_stay, Location=location, Check_in=checkin_day, Ckeck_out=checkout_day,Rent=rent , Type=type)
+    obj = Home_book1(User_name=username,Room_name=room_name,Name=home_stay, Location=location, Check_in=checkin_day, Check_out=checkout_day,Rent=rent , Type=type)
     obj.save()
     return HttpResponse("<script>window.location.href='/user_page/';alert('Payment Sucessfull')</script>")
 
@@ -536,7 +536,7 @@ def book_homestay_bot(request):
     print("Check-in Date:", formatted_date)
 
     home_stay_details = list(Room_details.objects.filter(Home_stay=homestay_name).values())
-    home__ = Room_details.objects.get(Home_stay=homestay_name)
+    home__ = Room_details.objects.filter(Home_stay=homestay_name)
     check_out = calculate_date_after_days(str(formatted_date),int(number_of_nights))
     home_stays= {'home_stay': home_stay_details,'check_in':formatted_date,'check_out':check_out}
     return render(request, "bot.html",home_stays)

@@ -77,25 +77,64 @@ body {
 </head>
 <body>
 
+  <script>
+    function showAddModal() {
+      document.getElementById('addModal').style.display='block';
+    }
+    
+    function redirectToAddPage(option) {
+      if (option === 'bike') {
+        window.location.href = "{% url 'bike_page' %}";
+      } else if (option === 'bikestation') {
+        window.location.href = "{% url 'bikestation_page' %}";
+      } else if (option === 'room') {
+        window.location.href = "{% url 'room_page' %}";
+      } else if (option === 'homestay') {
+        window.location.href = "{% url 'house_page' %}";
+      }
+      document.getElementById('addModal').style.display='none';
+    }
+    
+    window.onclick = function(event) {
+      var modal = document.getElementById('addModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+</script>
+
 <nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
   <div class="w3-container">
     <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
   </div>
   <div class="w3-bar-block">
     <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
-    <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
-    <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
-    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home Stay</a>
-    <a href="{% url 'room_page' %}"  class="w3-bar-item w3-button w3-hover-white">Rooms</a>
-    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
-    <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
-    <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Homestay</a>
-    <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Bike</a>
-    <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
-    <a href="{% url 'prediction_page' %}" class="w3-bar-item w3-button w3-hover-white">Prediction</a>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white" onclick="showAddModal()">Add</a>
+      <div id="addModal" class="w3-dropdown-content w3-bar-block w3-card-4" style="width: 150px; left: 50%; transform: translateX(-50%);">
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bike')">Bike</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bikestation')">Bike Station</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('room')">Room</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('homestay')">Homestay</a>
+      </div>
+    </div>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button">Manage Resource</a>
+        <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button">Manage Booking</a>
+      </div>
+    </div>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Visualisation</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button">Analytics_Homestay</a>
+        <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button">Analytics_Bike</a>
+      </div>
+    </div>
     <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
-
   </div>
 </nav>
 <h2 style="text-align: center;">Add Room Details</h2>

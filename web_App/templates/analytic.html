@@ -38,27 +38,64 @@ body {font-family: Arial, Helvetica, sans-serif;}
 </head>
 <body>
 
+  <script>
+    function showAddModal() {
+      document.getElementById('addModal').style.display='block';
+    }
+    
+    function redirectToAddPage(option) {
+      if (option === 'bike') {
+        window.location.href = "{% url 'bike_page' %}";
+      } else if (option === 'bikestation') {
+        window.location.href = "{% url 'bikestation_page' %}";
+      } else if (option === 'room') {
+        window.location.href = "{% url 'room_page' %}";
+      } else if (option === 'homestay') {
+        window.location.href = "{% url 'house_page' %}";
+      }
+      document.getElementById('addModal').style.display='none';
+    }
+    
+    window.onclick = function(event) {
+      var modal = document.getElementById('addModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+</script>
+
 <nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
   <div class="w3-container">
     <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
   </div>
   <div class="w3-bar-block">
-    
     <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
-    <a href="{% url 'bike_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike</a> 
-    <a href="{% url 'bikestation_page' %}"  class="w3-bar-item w3-button w3-hover-white">Bike Station</a> 
-    <a href="{% url 'house_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home Stay</a>
-    <a href="{% url 'room_page' %}"  class="w3-bar-item w3-button w3-hover-white">Rooms</a>
-    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a> 
-    <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button w3-hover-white">Manage</a>
-    <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Homestay</a>
-    <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button w3-hover-white">Analytics_Bike</a>
-    <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button w3-hover-white">Manage Booking</a>
-    <a href="{% url 'prediction_page' %}" class="w3-bar-item w3-button w3-hover-white">Prediction</a>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white" onclick="showAddModal()">Add</a>
+      <div id="addModal" class="w3-dropdown-content w3-bar-block w3-card-4" style="width: 150px; left: 50%; transform: translateX(-50%);">
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bike')">Bike</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bikestation')">Bike Station</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('room')">Room</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('homestay')">Homestay</a>
+      </div>
+    </div>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button">Manage Resource</a>
+        <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button">Manage Booking</a>
+      </div>
+    </div>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Visualisation</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button">Analytics_Homestay</a>
+        <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button">Analytics_Bike</a>
+      </div>
+    </div>
     <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
-
-
   </div>
 </nav>
 <h1 style="text-align: center;">Hotel Name</h1>
@@ -70,13 +107,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart2" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <h1 style="text-align: center;">Location</h1>
 <div class="container">
@@ -87,13 +118,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart4" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <h1 style="text-align: center;">Month</h1>
 <div class="container">
@@ -104,13 +129,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart6" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <h1 style="text-align: center;">Hotel Type</h1>
 <div class="container">
@@ -121,13 +140,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart8" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <h1 style="text-align: center;">Session</h1>
 <div class="container">
@@ -138,13 +151,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart11" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-  </div>
+  
 </div>
 <h1 style="text-align: center;">Days</h1>
 <div class="container">
@@ -168,40 +175,39 @@ body {font-family: Arial, Helvetica, sans-serif;}
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart1", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: ""
     },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Inventory"
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true // Ensure the y-axis starts at 0
-          }
-        }]
-      }
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Hotel Name' // Replace with your desired x-axis label
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Bookings' // Replace with your desired y-axis label
+        }
+      }]
     }
-  });
-</script>
-<script>
-  {{ k1|safe }}.forEach(item => {
-    // alert(item)
-  })
-
-  var xValues = {{ k1|safe }};
-  var yValues = {{ k2|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
-  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+  }
+});
 
   new Chart("myChart2", {
     type: "pie", // Change chart type to pie
@@ -236,41 +242,39 @@ body {font-family: Arial, Helvetica, sans-serif;}
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart3", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: ""
     },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Inventory"
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true // Ensure the y-axis starts at 0
-          }
-        }]
-      }
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Location' // Replace with your desired x-axis label
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Bookings' // Replace with your desired y-axis label
+        }
+      }]
     }
-  });
-</script>
-<script>
-  {{ k1|safe }}.forEach(item => {
-    // alert(item)
-  })
-
-  var xValues = {{ k3|safe }};
-  var yValues = {{ k4|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
-  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
-
+  }
+});
   new Chart("myChart4", {
     type: "pie", // Change chart type to pie
     data: {
@@ -304,41 +308,39 @@ body {font-family: Arial, Helvetica, sans-serif;}
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart5", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: ""
     },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Inventory"
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true // Ensure the y-axis starts at 0
-          }
-        }]
-      }
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Month' // Replace with your desired x-axis label
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Bookings' // Replace with your desired y-axis label
+        }
+      }]
     }
-  });
-</script>
-<script>
-  {{ k1|safe }}.forEach(item => {
-    // alert(item)
-  })
-
-  var xValues = {{ k5|safe }};
-  var yValues = {{ k6|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
-  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
-
+  }
+});
   new Chart("myChart6", {
     type: "pie", // Change chart type to pie
     data: {
@@ -372,40 +374,39 @@ body {font-family: Arial, Helvetica, sans-serif;}
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart7", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: ""
     },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Inventory"
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true // Ensure the y-axis starts at 0
-          }
-        }]
-      }
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Hotel Type' // Replace with your desired x-axis label
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Bookings' // Replace with your desired y-axis label
+        }
+      }]
     }
-  });
-</script>
-<script>
-  {{ k1|safe }}.forEach(item => {
-    // alert(item)
-  })
-
-  var xValues = {{ k7|safe }};
-  var yValues = {{ k8|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
-  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+  }
+});
 
   new Chart("myChart8", {
     type: "pie", // Change chart type to pie
@@ -452,7 +453,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
     options: {
       title: {
         display: true,
-        text: "Inventory"
+        text: ""
       },
       legend: {
         display: true,
@@ -480,40 +481,39 @@ body {font-family: Arial, Helvetica, sans-serif;}
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart10", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: { display: false },
+    title: {
+      display: true,
+      text: ""
     },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: "Inventory"
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true // Ensure the y-axis starts at 0
-          }
-        }]
-      }
+    scales: {
+      xAxes: [{
+        scaleLabel: {
+          display: true,
+          labelString: 'Session' // Replace with your desired x-axis label
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        },
+        scaleLabel: {
+          display: true,
+          labelString: 'Number of Bookings' // Replace with your desired y-axis label
+        }
+      }]
     }
-  });
-</script>
-<script>
-  {{ k1|safe }}.forEach(item => {
-    // alert(item)
-  })
-
-  var xValues = {{ k11|safe }};
-  var yValues = {{ k12|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
-  var pieColors = chroma.scale(['red', 'blue']).colors(numOfColors);
+  }
+});
 
   new Chart("myChart11", {
     type: "pie", // Change chart type to pie

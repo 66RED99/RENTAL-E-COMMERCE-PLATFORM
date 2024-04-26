@@ -61,7 +61,7 @@ class Home_book1(models.Model):
     Room_name = models.CharField(max_length=255)
     Location =  models.CharField(max_length=255)
     Check_in =  models.CharField(max_length=255)
-    Ckeck_out =  models.CharField(max_length=255)
+    Check_out =  models.CharField(max_length=255)
     Rent =  models.IntegerField()
     Type = models.CharField(max_length=255)
 

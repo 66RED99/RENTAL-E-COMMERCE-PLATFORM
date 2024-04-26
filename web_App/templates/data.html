@@ -1,0 +1,199 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>WanderWheels & Homesteads</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins"> 
+<style>
+body,h1,h2,h3,h4,h5 {font-family: "Poppins", sans-serif}
+body {font-size:16px;}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+</style>
+<link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    
+</head>
+<body>
+  <script>
+    function showAddModal() {
+      document.getElementById('addModal').style.display='block';
+    }
+    
+    function redirectToAddPage(option) {
+      if (option === 'bike') {
+        window.location.href = "{% url 'bike_page' %}";
+      } else if (option === 'bikestation') {
+        window.location.href = "{% url 'bikestation_page' %}";
+      } else if (option === 'room') {
+        window.location.href = "{% url 'room_page' %}";
+      } else if (option === 'homestay') {
+        window.location.href = "{% url 'house_page' %}";
+      }
+      document.getElementById('addModal').style.display='none';
+    }
+    
+    window.onclick = function(event) {
+      var modal = document.getElementById('addModal');
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+</script>
+
+<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+  <div class="w3-container">
+    <h3 class="w3-padding-64"><b>WanderWheels & Homesteads</b></h3>
+  </div>
+  <div class="w3-bar-block">
+    <a href="{% url 'admin_page' %}"  class="w3-bar-item w3-button w3-hover-white">Home</a> 
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white" onclick="showAddModal()">Add</a>
+      <div id="addModal" class="w3-dropdown-content w3-bar-block w3-card-4" style="width: 150px; left: 50%; transform: translateX(-50%);">
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bike')">Bike</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('bikestation')">Bike Station</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('room')">Room</a>
+        <a href="#" class="w3-bar-item w3-button" onclick="redirectToAddPage('homestay')">Homestay</a>
+      </div>
+    </div>
+    <a href="{% url 'userdetails_page' %}" class="w3-bar-item w3-button w3-hover-white">User Details</a>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Manage</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'manage_page' %}" class="w3-bar-item w3-button">Manage Resource</a>
+        <a href="{% url 'manage_booking' %}" class="w3-bar-item w3-button">Manage Booking</a>
+      </div>
+    </div>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Visualisation</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'booking_analytics' %}" class="w3-bar-item w3-button">Analytics_Homestay</a>
+        <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button">Analytics_Bike</a>
+      </div>
+    </div>
+    <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
+    <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
+  </div>
+</nav>
+<div id="addModal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom">
+    <div class="w3-container">
+      <span onclick="document.getElementById('addModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+      <h2>Add:</h2>
+      <select id="addOption">
+        <option value="bike">Bike</option>
+        <option value="bikestation">Bike Station</option>
+        <option value="room">Room</option>
+        <option value="homestay">Homestay</option>
+      </select>
+      <button onclick="redirectToAddPage()">Go</button>
+    </div>
+  </div>
+</div>
+<div class="w3-overlay w3-hide-large"  style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+
+  <div class="w3-container" style="margin-top:80px" id="about">
+    <h1 class="w3-jumbo"><b>WanderWheels & Homesteads</b></h1>
+    <h1 class="w3-xxxlarge w3-text-red"><b>About.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p><h3>Welcome to WanderWheels & Homesteads!</h3><br><br>
+
+      At WanderWheels & Homesteads, we believe in creating unforgettable travel experiences that seamlessly blend adventure and comfort. Our platform is your one-stop destination for exploring new horizons on two wheels and finding the perfect home away from home.
+      <br><br>
+      <b>About WanderWheels:</b>
+      <br><br>
+      Embark on a journey of freedom and exploration with our bike rental service, WanderWheels. Whether you're a thrill-seeker looking to conquer challenging terrains or a leisure rider enjoying a scenic cruise, we've got the wheels for you. Our diverse fleet of well-maintained bikes ensures that every rider, from beginners to seasoned cyclists, can find their perfect ride. With flexible rental options and easy booking, WanderWheels is your companion for discovering the world at your own pace.
+      <br><br>
+      <b>About Homesteads:</b>
+      <br><br>
+      Finding a cozy place to stay is as crucial as the journey itself. Enter Homesteads, our curated selection of charming accommodations that go beyond the ordinary. From quaint cottages to stylish urban apartments, each homestead is handpicked for its unique character and comfort. Immerse yourself in the local culture, connect with welcoming hosts, and make memories that linger long after you've checked out.
+      <br><br>
+      <b>Why Choose Us:</b>
+      <br><br>
+          Seamless Experience: Our user-friendly platform ensures a hassle-free booking process for both bikes and homestays.
+          <br><br>
+          Quality Assurance: WanderWheels boasts a fleet of well-maintained bikes, while Homesteads features accommodations that meet our high standards of comfort and authenticity.
+          <br><br>
+          Local Connections: We prioritize creating connections with local communities, providing you with an authentic travel experience.
+          <br><br>
+          Flexibility: Enjoy the freedom to explore with flexible rental periods and a variety of accommodation options.
+      
+      At WanderWheels & Homesteads, we're not just facilitating travel; we're crafting moments that last a lifetime. Join us in discovering the world in a way that suits your style. Start your journey today!</p>
+   
+  </div>
+
+  <div class="w3-container" style="margin-top:80px" id="showcase">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Showcase.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+  </div>
+   <div class="w3-row-padding">
+    <div class="w3-half">
+      <img src="{% static 'bike_rental.jpg' %}" style="width:100%" onclick="onClick(this)" alt="Concrete meets bricks">
+      <img src="{% static 'bike_rental_1.jpg' %}" style="width:100%" onclick="onClick(this)" alt="Light, white and tight scandinavian design">
+      <img src="{% static 'home_stay.jpg' %}" style="width:100%" onclick="onClick(this)" alt="White walls with designer chairs">
+      <img src="{% static 'home_stay1.jpg' %}" style="width:100%" onclick="onClick(this)" alt="Windows for the atrium">
+    
+    </div>
+  </div>
+  <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+    <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+    <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+      <img id="img01" class="w3-image">
+      <p id="caption"></p>
+    </div>
+  </div>
+  <div class="w3-container" id="services" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-red"><b>Services.</b></h1>
+    <hr style="width:50px;border:5px solid red" class="w3-round">
+    <p>
+
+At WanderWheels & Homesteads, we are committed to enhancing your travel experience by providing a comprehensive range of services tailored to meet your every need. Whether you're seeking the thrill of the open road on a rented bike or the comfort of a home away from home, our platform is designed to make your journey seamless and memorable.
+<br><br> 
+<h2>WanderWheels Services:</h2>
+<br><br>
+<b>1. Bike Rentals for Every Adventure:</b><br><br>
+Choose from our diverse fleet of bikes, ranging from rugged mountain bikes for off-road excursions to sleek road bikes for a smooth urban ride. Our rental service offers flexible durations, ensuring you have the right wheels for your entire journey.
+<br><br>
+<b>2. Easy Booking and Delivery:</b><br><br>
+Our user-friendly booking system allows you to reserve your preferred bike with just a few clicks. Enjoy the convenience of having your chosen bike delivered to your starting point, whether it's your accommodation or a specific trailhead.
+<br><br>
+<b>3. Maintenance and Safety:</b><br><br>
+Rest easy knowing that every WanderWheels bike is meticulously maintained to ensure reliability and safety. We prioritize your well-being, allowing you to focus on the joy of the ride.
+<br><br>
+<h2>Homesteads Services:</h2>
+<br><br>
+<b>1. Curated Accommodations:</b><br><br>
+Discover a range of handpicked homestays, each offering a unique blend of comfort, character, and local charm. From cozy cottages nestled in nature to stylish urban apartments, our accommodations cater to diverse preferences.
+<br><br>
+<b>2. Authentic Experiences:</b><br><br>
+Immerse yourself in the local culture with our homesteads that reflect the essence of their surroundings. Forge connections with welcoming hosts who are eager to share their knowledge and recommendations, ensuring an authentic and enriching stay.
+<br><br>
+<b>3. Booking Flexibility:</b><br><br>
+Tailor your stay to your preferences with flexible booking options. Whether you're planning a short getaway or an extended adventure, Homesteads provides accommodations for every type of traveler.
+<br><br>
+<h2>Combined Services:</h2>
+<br><br>
+<b>1. Travel Packages:</b><br><br>
+Unlock the full potential of your journey with our customizable travel packages. Seamlessly combine bike rentals with homestay bookings for a holistic travel experience that caters to your specific interests and preferences.
+<br><br>
+<b>2. Customer Support:</b><br><br>
+Our dedicated customer support team is available to assist you throughout your journey. From answering queries about bike specifications to providing local tips for your homestay, we're here to ensure your trip is as smooth as possible.
+<br><br>
+At WanderWheels & Homesteads, we go beyond being a service provider; we're your travel companions, dedicated to making each moment of your journey memorable and stress-free. Choose us for a travel experience that's as unique as you are.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
+
+
