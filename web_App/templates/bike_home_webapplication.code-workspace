@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../bike_home_webapplication"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "majorproject"
+	}
+}

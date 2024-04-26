@@ -6,6 +6,7 @@ from datetime import datetime, timedelta,date
 import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.shortcuts import render
 
 def front_page(request):
     return render(request, "home.html")
@@ -15,6 +16,12 @@ def admin_page(request):
 
 def user_page(request):
     return render(request, "user.html")
+
+def data_page(request):
+    context = {
+        'your_data': 'This is some data you can pass to the template'
+    }
+    return render(request, 'data.html', context)
 
 def book_homestay(request):
     home_stay = Homestay_details.objects.all()
