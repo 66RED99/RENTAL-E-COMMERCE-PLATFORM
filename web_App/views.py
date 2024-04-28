@@ -634,12 +634,12 @@ def booking_analytics(request):
 
 # Define the sessions
     session_mapping = {
-        '04': 'Session 1',  # April
-        '05': 'Session 1',  # May
-        '08': 'Session 2',  # August
-        '09': 'Session 2',  # September
-        '12': 'Session 3',  # December
-        '01': 'Session 3'   # January
+        '04': 'Summer',  # April
+        '05': 'Summer',  # May
+        '08': 'onam',  # August
+        '09': 'onam',  # September
+        '12': 'christmas',  # December
+        '01': 'christmas'   # January
     }
 
     # Group months into sessions and count occurrences of each session
@@ -702,12 +702,12 @@ def bike_analytics(request):
     unique_check_in_ = list(check_in_counts_.keys())
     count_check_in_ = list(check_in_counts_.values())
     session_mapping = {
-        '04': 'Session 1',  # April
-        '05': 'Session 1',  # May
-        '08': 'Session 2',  # August
-        '09': 'Session 2',  # September
-        '12': 'Session 3',  # December
-        '01': 'Session 3'   # January
+        '04': 'Summer',  # April
+        '05': 'Summer',  # May
+        '08': 'onam',  # August
+        '09': 'onam',  # September
+        '12': 'christmas',  # December
+        '01': 'christmas'   # January
     }
 
     # Group months into sessions and count occurrences of each session

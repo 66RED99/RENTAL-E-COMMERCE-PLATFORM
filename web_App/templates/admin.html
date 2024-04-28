@@ -83,21 +83,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
   </div>
 </nav>
-<div id="addModal" class="w3-modal">
-  <div class="w3-modal-content w3-animate-zoom">
-    <div class="w3-container">
-      <span onclick="document.getElementById('addModal').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-      <h2>Add:</h2>
-      <select id="addOption">
-        <option value="bike">Bike</option>
-        <option value="bikestation">Bike Station</option>
-        <option value="room">Room</option>
-        <option value="homestay">Homestay</option>
-      </select>
-      <button onclick="redirectToAddPage()">Go</button>
-    </div>
-  </div>
-</div>
+
 <div class="w3-overlay w3-hide-large"  style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <div class="w3-main" style="margin-left:340px;margin-right:40px">

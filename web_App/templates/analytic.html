@@ -142,7 +142,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   </div>
   
 </div>
-<h1 style="text-align: center;">Session</h1>
+<h1 style="text-align: center;">Season</h1>
 <div class="container">
   <div class="row">
     <div class="card">
@@ -153,16 +153,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   </div>
   
 </div>
-<h1 style="text-align: center;">Days</h1>
-<div class="container">
-  <div class="row">
-    <div class="card">
-      <div class="card-body d-flex align-items-center justify-content-center">
-        <canvas id="myChart9" style="max-width: 600px;"></canvas>
-      </div>
-    </div>
-</div>
-</div>
+
 <script>
   {{ k1|safe }}.forEach(item => {
     // alert(item)
@@ -303,61 +294,56 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
   var xValues = {{ k5|safe }};
   var yValues = {{ k6|safe }};
-  
-  var numOfColors = xValues.length; // Generate the same number of colors as the number of labels
+
+  // Define the order of months
+  const monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  // Create an object to map month names to their corresponding data values
+  const monthData = {};
+  xValues.forEach((month, index) => {
+    monthData[month] = yValues[index];
+  });
+
+  // Sort the months based on the defined order
+  const sortedMonths = xValues.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
+
+  // Rearrange the data values based on the sorted month order
+  const sortedData = sortedMonths.map(month => monthData[month]);
+
+  var numOfColors = sortedMonths.length;
   var barColors = chroma.scale(['red', 'blue']).colors(numOfColors);
 
   new Chart("myChart5", {
-  type: "bar",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    legend: { display: false },
-    title: {
-      display: true,
-      text: ""
-    },
-    scales: {
-      xAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Month' // Replace with your desired x-axis label
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        },
-        scaleLabel: {
-          display: true,
-          labelString: 'Number of Bookings' // Replace with your desired y-axis label
-        }
-      }]
-    }
-  }
-});
-  new Chart("myChart6", {
-    type: "pie", // Change chart type to pie
+    type: "bar",
     data: {
-      labels: xValues,
+      labels: sortedMonths,
       datasets: [{
-        backgroundColor: pieColors,
-        data: yValues
+        backgroundColor: barColors,
+        data: sortedData
       }]
     },
     options: {
+      legend: { display: false },
       title: {
         display: true,
-        text: "Inventory"
+        text: ""
       },
-      legend: {
-        display: true,
-        position: 'bottom'
+      scales: {
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Month'
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Number of Bookings'
+          }
+        }]
       }
     }
   });
@@ -439,7 +425,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   
   var lineColor = 'green'; // Set color for the line
   
-  new Chart("myChart9", {
+  //new Chart("myChart9", {
     type: "line", // Change chart type to line
     data: {
       labels: xValues,
@@ -499,7 +485,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
       xAxes: [{
         scaleLabel: {
           display: true,
-          labelString: 'Session' // Replace with your desired x-axis label
+          labelString: 'Season' // Replace with your desired x-axis label
         }
       }],
       yAxes: [{

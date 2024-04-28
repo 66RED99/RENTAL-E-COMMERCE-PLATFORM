@@ -19,6 +19,8 @@ from django.urls import path
 from web_App.views import *
 from django.conf import settings
 from django.conf.urls.static import static
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", front_page),
@@ -76,8 +78,7 @@ urlpatterns = [
     path("adding_homes/", adding_homes, name="adding_homes"),
     path("select_room/", select_room, name="select_room"),
     path("pay_page/", pay_page, name="pay_page"),
-    path("payment_bike/", payment_bike, name="payment_bike"),
-
+    path("payment_bike/", payment_bike, name="payment_bike")
     
 ]
 if settings.DEBUG:

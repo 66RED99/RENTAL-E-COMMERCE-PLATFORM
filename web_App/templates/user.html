@@ -143,6 +143,36 @@ body {font-family: Arial, Helvetica, sans-serif;}
             border-radius: 10px;
             margin-bottom: 5px;
         }
+
+    /* Pop-up message styles */
+/* Pop-up message styles */
+#popup-message {
+    display: none;
+    position: fixed;
+    bottom: 150px;
+    right: 30px;
+    background-color: #ffd633; /* Changed background color to a bright yellow */
+    padding: 15px 20px; /* Increased padding for better spacing */
+    border-radius: 10px; /* Increased border-radius for rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Added a subtle box-shadow */
+    color: #333; /* Changed text color to a darker shade */
+    font-size: 16px; /* Increased font size */
+    font-weight: bold; /* Made the text bold */
+    z-index: 1001;
+    animation: popup-slide-in 0.5s ease; /* Added an animation */
+}
+
+/* Animation for the pop-up message */
+@keyframes popup-slide-in {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
 <link rel="stylesheet" href="{% static 'styles.css' %}" />
 <script>
@@ -241,6 +271,9 @@ $(document).ready(function(){
   <button id="submit-btn_">Send</button>
 </div>
 
+<!-- Pop-up message container -->
+<div id="popup-message"></div>
+
 <script>
  document.getElementById('submit-btn_').addEventListener('click', function() {
         sendMessage1();
@@ -251,6 +284,19 @@ $(document).ready(function(){
             sendMessage1();
         }
     });
+
+    $(document).ready(function(){
+  $("#chat-toggle-btn").click(function(){
+    $("#chat-container_").show();
+    $("#popup-message").html("Type 'book homestay' or 'book bike' to start booking.").show();
+    setTimeout(function() {
+      $("#popup-message").fadeOut();
+    }, 5000); // Hide the pop-up message after 5 seconds
+  });
+});
+
+
+
 
     function sendMessage1() {
         var userInput = document.getElementById('user-input_').value;
@@ -317,6 +363,19 @@ $(document).ready(function(){
              sendMessage();
          }
      });
+
+     $(document).ready(function(){
+  $("#chat-toggle-btn").click(function(){
+    $("#chat-container_").show();
+    $("#popup-message").html("Type 'book homestay' or 'book bike' to start booking.").show();
+    setTimeout(function() {
+      $("#popup-message").fadeOut();
+    }, 5000); // Hide the pop-up message after 5 seconds
+  });
+});
+
+
+
  
      function sendMessage() {
          var userInput = document.getElementById('user-input').value;
