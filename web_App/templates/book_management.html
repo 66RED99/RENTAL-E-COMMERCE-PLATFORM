@@ -203,6 +203,13 @@ body {
         <a href="{% url 'bike_analytics' %}" class="w3-bar-item w3-button">Analytics_Bike</a>
       </div>
     </div>
+    <div class="w3-dropdown-hover">
+      <a href="#" class="w3-bar-item w3-button w3-hover-white">Data</a>
+      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+        <a href="{% url 'data_page' %}" class="w3-bar-item w3-button">Data Homestay</a>
+        <a href="{% url 'data_bike' %}" class="w3-bar-item w3-button">Data Bike</a>
+      </div>
+    </div>
     <a href="{% url 'feedback_admin' %}" class="w3-bar-item w3-button w3-hover-white">User Feedback</a>
     <a href="{% url 'front_page' %}" class="w3-bar-item w3-button w3-hover-white">Logout</a> 
   </div>
