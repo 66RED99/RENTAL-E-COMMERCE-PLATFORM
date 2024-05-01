@@ -640,12 +640,12 @@ def booking_analytics(request):
 
 # Define the sessions
     session_mapping = {
-        '04': 'Session 1',  # April
-        '05': 'Session 1',  # May
-        '08': 'Session 2',  # August
-        '09': 'Session 2',  # September
-        '12': 'Session 3',  # December
-        '01': 'Session 3'   # January
+        '04': 'summer',  # April
+        '05': 'summer',  # May
+        '08': 'Onam',  # August
+        '09': 'Onam',  # September
+        '12': 'Christmas',  # December
+        '01': 'Christmas'   # January
     }
 
     # Group months into sessions and count occurrences of each session
@@ -708,12 +708,12 @@ def bike_analytics(request):
     unique_check_in_ = list(check_in_counts_.keys())
     count_check_in_ = list(check_in_counts_.values())
     session_mapping = {
-        '04': 'Session 1',  # April
-        '05': 'Session 1',  # May
-        '08': 'Session 2',  # August
-        '09': 'Session 2',  # September
-        '12': 'Session 3',  # December
-        '01': 'Session 3'   # January
+        '04': 'summer',  # April
+        '05': 'summer',  # May
+        '08': 'Onam',  # August
+        '09': 'Onam',  # September
+        '12': 'Christmas',  # December
+        '01': 'Christmas'   # January
     }
 
     # Group months into sessions and count occurrences of each session
@@ -912,6 +912,74 @@ def data_page(request):
         context = {}
 
     return render(request, 'data.html', context)
+
+
+def data_bike(request):
+   
+
+    # Construct the full file path
+    conn = sqlite3.connect('db.sqlite3')
+
+    # Query the table and load the data into a DataFrame
+    query = "SELECT * FROM web_App_bike_books;"
+    bookings_data = pd.read_sql_query(query, conn)
+
+    # Close the database connection
+    conn.close()
+
+    # Convert check-in and check-out dates to datetime format
+    bookings_data['Rent_date'] = pd.to_datetime(bookings_data['Rent_date'], format='%Y-%m-%d')
+    bookings_data['Return_date'] = pd.to_datetime(bookings_data['Return_date'], format='%Y-%m-%d')
+
+# Calculate the length of stay
+    bookings_data['length_of_stay'] = (bookings_data['Rent_date'] - bookings_data['Return_date']).dt.days
+
+    # One-hot encode categorical variables
+    bookings_data = pd.get_dummies(bookings_data, columns=['Bikestation_name', 'Bike_name'])
+
+    # Feature Selection
+    features = ['length_of_stay', 'Bikestation_name_Bikers Spots', 'Bikestation_name_Bikers Point', 'Bikestation_name_Bikers Hunt','Bikestation_name_Bikers Lover', 'Bikestation_name_Bikers Hub', 'Bikestation_name_iones two wheelers',
+                'Bike_name_Continental GT 650', 'Bike_name_Hunter 350', 'Bike_name_Himalayan 450', 'Bike_name_pulsar', 'Bike_name_DIO', 'Bike_name_Royal enfeild interceptor', 'Bike_name_Activa', 'Bike_name_Royal enfeild bullet 350'
+                ]
+
+    X = bookings_data[features]
+    y = bookings_data['total_amout']
+
+    # Split the Data into Training and Testing Sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Train a Machine Learning Model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    # Calculate the overall percentage increase in rental prices for I-ONES homestay
+    #X_ones = X_test[X_test['Name_I-ONES'] == 1]
+    #y_ones_orig = model.predict(X_ones)
+
+    if request.method == 'POST':
+        selected_bikestation = request.POST.get('selected_bikestation')
+        duration_increase = request.POST.get('duration_increase')
+        if selected_bikestation and duration_increase:
+            duration_increase = float(duration_increase) / 100 + 1  # Convert to a factor
+            X_ones = X_test[X_test[f'Bikestation_name_{selected_bikestation}'] == 1]
+            y_ones_orig = model.predict(X_ones)
+            X_ones_new = X_ones.copy()
+            X_ones_new['length_of_stay'] *= duration_increase
+            y_ones_new = model.predict(X_ones_new)
+            overall_increase_percent = (y_ones_new.mean() - y_ones_orig.mean()) / y_ones_orig.mean() * 100
+
+            context = {
+                'overall_increase_percent': overall_increase_percent,
+                'duration_increase': float(request.POST.get('duration_increase')),
+                'selected_bikestation': selected_bikestation
+            }
+        else:
+            context = {}
+    else:
+        context = {}
+
+    return render(request, 'data_bike.html', context)
+
 
 
 
