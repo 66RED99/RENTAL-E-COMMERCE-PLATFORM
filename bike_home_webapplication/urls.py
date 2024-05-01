@@ -45,6 +45,7 @@ urlpatterns = [
     path("edit_room/", edit_room, name="edit_room"),
     path("delete_room/", delete_room, name="delete_room"),
     path("data_page/", data_page, name="data_page"),
+    path("data_page_ts/", data_page_ts, name="data_page_ts"),
     path("data_bike/", data_bike, name="data_bike"),
     path("user_page/", user_page, name="user_page"),
     path("book_homestay/", book_homestay, name="book_homestay"),

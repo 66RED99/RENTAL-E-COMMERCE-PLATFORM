@@ -12,6 +12,11 @@ import numpy as np
 import sqlite3
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
+from keras.callbacks import EarlyStopping
 
 
 def front_page(request):
@@ -905,6 +910,106 @@ def data_page(request):
 
     return render(request, 'data.html', context)
 
+
+# Helper function to create input and output sequences for LSTM
+def create_dataset(data, look_back):
+    X, y = [], []
+    for i in range(len(data) - look_back):
+        X.append(data[i:i + look_back])
+        y.append(data[i + look_back])
+    return np.array(X), np.array(y)
+
+def data_page_ts(request):
+    if request.method == 'POST':
+        selected_homestay_ts = request.POST.get('selected_homestay_ts')
+        prediction_month = int(request.POST.get('prediction_month'))
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect('db.sqlite3')
+
+        # Query the tables and load the data into DataFrames
+        query = "SELECT * FROM web_App_home_book1;"
+        bookings_data = pd.read_sql_query(query, conn)
+
+        query1 = "SELECT * FROM web_App_room_details;"
+        room_details_data = pd.read_sql_query(query1, conn)
+
+        # Convert check-in and check-out dates to datetime format
+        bookings_data['Check_in'] = pd.to_datetime(bookings_data['Check_in'], format='%Y-%m-%d', errors='coerce')
+        bookings_data['Check_out'] = pd.to_datetime(bookings_data['Check_out'], format='%Y-%m-%d', errors='coerce')
+
+        # Calculate length of stay
+        bookings_data['length_of_stay'] = (bookings_data['Check_out'] - bookings_data['Check_in']).dt.days
+
+        # Drop rows with missing or invalid dates
+        bookings_data = bookings_data.dropna(subset=['Check_in', 'Check_out', 'length_of_stay'])
+
+        # Convert to time series format
+        bookings_data['Booking_Date'] = bookings_data['Check_in'].dt.date
+        bookings_by_date = bookings_data.groupby(['Booking_Date', 'Name', 'length_of_stay']).size().reset_index(name='Bookings')
+
+        # Set the forecasting period (1 year)
+        forecast_period = 365
+
+        group = bookings_by_date[bookings_by_date['Name'] == selected_homestay_ts]
+
+        # Get the room price from the room details
+        room_price = room_details_data.loc[room_details_data['Home_stay'] == selected_homestay_ts, 'Price'].values[0]
+
+        # Prepare the data for LSTM
+        data = group.groupby('Booking_Date')['Bookings'].sum().reset_index()
+        data = data.set_index('Booking_Date').reindex(pd.date_range(start=data['Booking_Date'].min(), end=data['Booking_Date'].max(), freq='D'), fill_value=0)
+        data = data.reset_index()
+        data = data['Bookings'].values.reshape(-1, 1)
+
+        # Normalize the data
+        scaler = MinMaxScaler()
+        data_scaled = scaler.fit_transform(data)
+
+        # Split the data into training and testing sets
+        train_size = int(len(data_scaled) * 0.8)
+        train_data = data_scaled[:train_size]
+        test_data = data_scaled[train_size:]
+
+        # Prepare the data for LSTM input
+        look_back = 30  # Number of previous time steps to use as input
+        train_X, train_y = create_dataset(train_data, look_back)
+        test_X, test_y = create_dataset(test_data, look_back)
+
+        # Build the LSTM model
+        model = Sequential()
+        model.add(LSTM(64, input_shape=(look_back, 1)))
+        model.add(Dense(1))
+        model.compile(optimizer='adam', loss='mean_squared_error')
+
+        # Train the model
+        early_stop = EarlyStopping(monitor='val_loss', patience=5)
+        model.fit(train_X, train_y, epochs=30, batch_size=64, validation_data=(test_X, test_y), callbacks=[early_stop], verbose=1)
+
+        # Generate forecasts for the next year
+        forecasts = []
+        inputs = data_scaled[-look_back:].reshape(1, look_back, 1)
+        for _ in range(forecast_period):
+            forecast = model.predict(inputs, verbose=0)
+            forecasts.append(forecast[0, 0])
+            inputs = np.roll(inputs, -1, axis=1)
+            inputs[0, -1, 0] = forecast[0, 0]
+
+        forecasts = scaler.inverse_transform(np.array(forecasts).reshape(-1, 1)).flatten()
+
+        # Calculate monthly sales in actual price
+        monthly_sales = [np.sum(forecasts[i:i+30]) * room_price for i in range(0, len(forecasts)-30, 30)]
+
+        predicted_sales = monthly_sales[prediction_month - 1]  # Adjust for 0-based indexing
+
+        context = {
+            'selected_homestay_ts': selected_homestay_ts,
+            'prediction_month': prediction_month,
+            'predicted_sales': predicted_sales,
+        }
+        return render(request, 'data.html', context)
+
+    return render(request, 'data.html')
 
 # views.py
 def data_bike(request):
