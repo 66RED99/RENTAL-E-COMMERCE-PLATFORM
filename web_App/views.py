@@ -592,7 +592,6 @@ import matplotlib.pyplot as plt
 from django.shortcuts import render
 from collections import Counter
 
-
 def booking_analytics(request):
     spice_nm=[]
     spice_co=[]
@@ -643,7 +642,7 @@ def booking_analytics(request):
     count_check_in_ = list(check_in_counts_.values())
     months = [datetime.strptime(date, '%Y-%m-%d').strftime('%m') for date in check_in]
 
-# Define the sessions
+    # Define the sessions
     session_mapping = {
         '04': 'summer',  # April
         '05': 'summer',  # May
@@ -662,9 +661,30 @@ def booking_analytics(request):
     # Output session names and counts
     print(session_names)
     print(session_count)
-    ####################################################################################################
-    return render(request, 'analytic.html',{'k1':unique_names,'k2':counts,'k3':unique_location,'k4':count_location,'k5':unique_check_in,'k6':count_check_in,'k7':unique_type,'k8':count_type,'k9':unique_check_in_,'k10':count_check_in_,'k11':session_names,'k12':session_count})
 
+    # Get room type data
+    room_names = [entry['Room_name'] for entry in co1]
+    room_counts = Counter(room_names)
+    unique_room_names = list(room_counts.keys())
+    room_booking_counts = list(room_counts.values())
+
+    ####################################################################################################
+    return render(request, 'analytic.html', {
+        'k1': unique_names,
+        'k2': counts,
+        'k3': unique_location,
+        'k4': count_location,
+        'k5': unique_check_in,
+        'k6': count_check_in,
+        'k7': unique_type,
+        'k8': count_type,
+        'k9': unique_check_in_,
+        'k10': count_check_in_,
+        'k11': session_names,
+        'k12': session_count,
+        'room_names': unique_room_names,
+        'room_booking_counts': room_booking_counts
+    })
 def bike_analytics(request):
    
     ##################################################################################################
