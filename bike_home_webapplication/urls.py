@@ -47,7 +47,6 @@ urlpatterns = [
     path("data_page/", data_page, name="data_page"),
     path("data_page_ts/", data_page_ts, name="data_page_ts"),
     path("data_bike/", data_bike, name="data_bike"),
-    path("data_bike_ts/", data_bike_ts, name="data_bike_ts"),
     path("user_page/", user_page, name="user_page"),
     path("book_homestay/", book_homestay, name="book_homestay"),
     path("book_bike/", book_bike, name="book_bike"),

@@ -17,6 +17,16 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.callbacks import EarlyStopping
+from keras.preprocessing.sequence import TimeseriesGenerator
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+from plotly.offline import plot
+
+
+# Set seed value for random number generators
+np.random.seed(0)
+tf.random.set_seed(0)
 
 
 def front_page(request):
@@ -898,6 +908,83 @@ def data_page(request):
     model = LinearRegression()
     model.fit(X_train, y_train)
 
+
+
+########################################################################################################ts
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(dir_path, 'web_App_home_book2.csv')
+    
+    df = pd.read_csv(file_path,index_col='Check_in',parse_dates=True)
+    df.index.freq='MS'
+    
+    len(df)
+    
+    train = df.iloc[:]
+    #test = df.iloc[36:]
+    
+    from sklearn.preprocessing import MinMaxScaler
+    scaler = MinMaxScaler()
+    
+    scaler.fit(train)
+    scaled_train = scaler.transform(train)
+    #scaled_test = scaler.transform(test)
+    
+    
+    # define generator
+    n_input = 12
+    n_features = 1
+    generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
+    
+    
+    
+    # define model
+    model = Sequential()
+    model.add(LSTM(100, activation='relu', input_shape=(n_input, n_features)))
+    model.add(Dense(1))
+    model.compile(optimizer='adam', loss='mse')
+    
+    # fit model
+    model.fit(generator,epochs=50)
+    
+    test_predictions = []
+    
+    first_eval_batch = scaled_train[-n_input:]
+    current_batch = first_eval_batch.reshape((1, n_input, n_features))
+    
+    
+    
+    for i in range(12):
+    
+        # get the prediction value for the first batch
+        current_pred = model.predict(current_batch)[0]
+    
+        # append the prediction into the array
+        test_predictions.append(current_pred)
+    
+        # use the prediction to update the batch and remove the first value
+        current_batch = np.append(current_batch[:,1:,:],[[current_pred]],axis=1)
+    
+    
+    true_predictions = scaler.inverse_transform(test_predictions)
+    print(true_predictions)
+
+
+    # Interactive graph using Plotly
+    actual_rent = go.Scatter(x=df.index[-12:], y=df['Rent'].values[-12:], mode='lines', name='Actual Rent')
+    predicted_rent = go.Scatter(x=df.index[-12:], y=true_predictions.flatten(), mode='lines', name='Predicted Rent')
+    layout = go.Layout(title='Actual vs Predicted Rent',
+                       xaxis=dict(title='Month'),
+                       yaxis=dict(title='Rent'))
+    graph_data = [actual_rent, predicted_rent]
+    graph_layout = layout
+    graph_figure = go.Figure(data=graph_data, layout=graph_layout)
+    graph_html = plot(graph_figure, output_type='div', include_plotlyjs=False)
+
+    context = {
+        # Your existing context variables here...
+        'graph_html': graph_html
+    }
+
     if request.method == 'POST':
         selected_homestay = request.POST.get('selected_homestay')
         duration_increase = request.POST.get('duration_increase')
@@ -921,7 +1008,8 @@ def data_page(request):
                 'overall_increase_percent': overall_increase_percent,
                 'duration_increase': float(request.POST.get('duration_increase')),
                 'selected_homestay': selected_homestay,
-                'amount_increase': amount_increase_yearly
+                'amount_increase': amount_increase_yearly,
+                'graph_html': graph_html
             }
         else:
             context = {}
@@ -929,7 +1017,6 @@ def data_page(request):
         context = {}
 
     return render(request, 'data.html', context)
-
 
 # Helper function to create input and output sequences for LSTM
 def create_dataset(data, look_back):
@@ -947,12 +1034,9 @@ def data_page_ts(request):
         # Connect to the SQLite database
         conn = sqlite3.connect('db.sqlite3')
 
-        # Query the tables and load the data into DataFrames
+        # Query the table and load the data into a DataFrame
         query = "SELECT * FROM web_App_home_book1;"
         bookings_data = pd.read_sql_query(query, conn)
-
-        query1 = "SELECT * FROM web_App_room_details;"
-        room_details_data = pd.read_sql_query(query1, conn)
 
         # Convert check-in and check-out dates to datetime format
         bookings_data['Check_in'] = pd.to_datetime(bookings_data['Check_in'], format='%Y-%m-%d', errors='coerce')
@@ -966,15 +1050,16 @@ def data_page_ts(request):
 
         # Convert to time series format
         bookings_data['Booking_Date'] = bookings_data['Check_in'].dt.date
-        bookings_by_date = bookings_data.groupby(['Booking_Date', 'Name', 'length_of_stay']).size().reset_index(name='Bookings')
+        bookings_by_date = bookings_data.groupby(['Booking_Date', 'Name', 'length_of_stay', 'Room_name']).size().reset_index(name='Bookings')
+        
+
+        # Convert Booking_Date to datetime
+        bookings_by_date['Booking_Date'] = pd.to_datetime(bookings_by_date['Booking_Date'])
 
         # Set the forecasting period (1 year)
         forecast_period = 365
 
         group = bookings_by_date[bookings_by_date['Name'] == selected_homestay_ts]
-
-        # Get the room price from the room details
-        room_price = room_details_data.loc[room_details_data['Home_stay'] == selected_homestay_ts, 'Price'].values[0]
 
         # Prepare the data for LSTM
         data = group.groupby('Booking_Date')['Bookings'].sum().reset_index()
@@ -1004,7 +1089,7 @@ def data_page_ts(request):
 
         # Train the model
         early_stop = EarlyStopping(monitor='val_loss', patience=5)
-        model.fit(train_X, train_y, epochs=30, batch_size=64, validation_data=(test_X, test_y), callbacks=[early_stop], verbose=1)
+        model.fit(train_X, train_y, epochs=30, batch_size=128, validation_data=(test_X, test_y), callbacks=[early_stop], verbose=0)
 
         # Generate forecasts for the next year
         forecasts = []
@@ -1018,7 +1103,25 @@ def data_page_ts(request):
         forecasts = scaler.inverse_transform(np.array(forecasts).reshape(-1, 1)).flatten()
 
         # Calculate monthly sales in actual price
-        monthly_sales = [np.sum(forecasts[i:i+30]) * room_price for i in range(0, len(forecasts)-30, 30)]
+        monthly_sales = [np.sum(forecasts[i:i+30]) for i in range(0, len(forecasts)-30, 30)]
+
+        # Calculate the sales for the same month from the previous year
+        last_year_sales = 0
+        current_year = pd.to_datetime('today').year  # Get the current year
+
+        # Check if the data contains bookings for the previous year
+        last_year_data = group[group['Booking_Date'].dt.year == current_year - 1]
+        if not last_year_data.empty:
+            last_year_sales_data = last_year_data[last_year_data['Booking_Date'].dt.month == prediction_month]
+            last_year_sales = calculate_sales(last_year_sales_data)
+
+        # If no data for the previous year, check for the year before that
+        if last_year_sales == 0:
+            two_years_ago = current_year - 2
+            two_years_ago_data = group[group['Booking_Date'].dt.year == two_years_ago]
+            if not two_years_ago_data.empty:
+                two_years_ago_sales_data = two_years_ago_data[two_years_ago_data['Booking_Date'].dt.month == prediction_month]
+                last_year_sales = calculate_sales(two_years_ago_sales_data)
 
         predicted_sales = monthly_sales[prediction_month - 1]  # Adjust for 0-based indexing
 
@@ -1026,10 +1129,30 @@ def data_page_ts(request):
             'selected_homestay_ts': selected_homestay_ts,
             'prediction_month': prediction_month,
             'predicted_sales': predicted_sales,
+            'last_year_sales': last_year_sales,
         }
         return render(request, 'data.html', context)
 
     return render(request, 'data.html')
+
+# Function to calculate sales based on room type and length of stay
+def calculate_sales(sales_data):
+    total_sales = 0
+    for _, row in sales_data.iterrows():
+        room_type = row['Room_name']
+        length_of_stay = row['length_of_stay']
+        if room_type == 'Budget Room':
+            room_rate = 900
+        elif room_type == 'Standard Room':
+            room_rate = 1300
+        elif room_type == 'Queen Room':
+            room_rate = 1500
+        else:
+            room_rate = 0
+        rent = length_of_stay * room_rate
+        total_sales += rent
+    return total_sales
+
 
 # views.py
 def data_bike(request):

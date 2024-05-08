@@ -1,0 +1,16 @@
+Sl_no,Bike_station,Bike_name,Bike_type,Bike_price,Bike_availability,Bike_image
+1,Bikers Spots,Continental GT 650,road,1800,Available,bike_images/gt.webp
+2,Bikers Spots,Hunter 350,road,1200,Available,bike_images/Hunter350.jpg
+3,Bikers Spots,Himalayan 450,mountain,1500,Available,bike_images/himalayan450.jpg
+4,Bikers Spots,pulsar,road,1100,Available,bike_images/pulsar.webp
+5,Bikers Point,DIO,road,600,Available,bike_images/dio.jpeg
+6,Bikers Point,Himalayan 450,mountain,1500,Available,bike_images/himalayan450.jpg
+7,Bikers Hunt ,DIO,road,600,Available,bike_images/dio.jpeg
+8,Bikers Hunt ,Royal enfeild interceptor,road,2000,Available,bike_images/interceptor.jpeg
+9,Bikers Hunt ,pulsar,road,1100,Available,bike_images/pulsar.webp
+10,Bikers Lover ,Activa,road,600,Available,bike_images/activa.webp
+11,Bikers Lover ,Royal enfeild interceptor,road,2000,Available,bike_images/interceptor.jpeg
+12,Bikers Hub,Royal enfeild bullet 350,road,1000,Available,bike_images/bullet350.webp
+13,Bikers Hub,pulsar,road,1100,Available,bike_images/pulsar.webp
+14,iones two wheelers,DIO,road,600,Available,bike_images/dio.jpeg
+15,iones two wheelers,Royal enfeild interceptor,road,2000,Available,bike_images/interceptor.jpeg

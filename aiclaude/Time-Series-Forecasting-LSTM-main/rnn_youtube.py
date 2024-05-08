@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import os
 
 dir_path = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(dir_path, 'web_App_home_book1.csv')
+file_path = os.path.join(dir_path, 'monthly_milk_production.csv')
 
 df = pd.read_csv(file_path,index_col='Date',parse_dates=True)
 df.index.freq='MS'
