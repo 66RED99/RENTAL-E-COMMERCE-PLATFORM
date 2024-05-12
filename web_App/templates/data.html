@@ -104,25 +104,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <hr style="width:50px;border:5px solid red" class="w3-round">
 
     <!-- data.html -->
-<div class="w3-container">
-  <h2>Predict the increase in Rent for Homestay</h2>
-  <form method="post">
-      {% csrf_token %}
-      <label for="duration_increase">Select the Homestay:</label>
-      <select name="selected_homestay" id="selected_homestay" required>
-          <option value="I-ONES">I-ONES</option>
-          <option value="Ivy Cottage">Ivy Cottage</option>
-          <option value="Blue Heaven">Blue Heaven</option>
-          <option value="Cozy Cabin">Cozy Cabin</option>
-      </select>
-      <label for="duration_increase">Type the increase in length of stay (%):</label>
-      <input type="number" id="duration_increase" name="duration_increase" min="0" required>
-      <button type="submit">Calculate</button>
-  </form>
-  {% if overall_increase_percent %}
-  <p>The sales for {{ selected_homestay }} will increase by {{ overall_increase_percent|floatformat:2 }}% (+{{ amount_increase|floatformat:0 }}) when the length of stay is increased by {{ duration_increase }}% for one year.</p>
-  {% endif %}
-</div>
+
     
 <div class="w3-container">
   <h2>Sales in next year (Time Series)</h2>
@@ -131,13 +113,6 @@ body {font-family: Arial, Helvetica, sans-serif;}
     {{ graph_html | safe }}
   </div>
 </div>
-
-
-</div>
-
-
-
-
 
 
 

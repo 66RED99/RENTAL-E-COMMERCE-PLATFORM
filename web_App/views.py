@@ -878,280 +878,104 @@ def get_response1(request):
     return JsonResponse({'error': 'Invalid request'})
 
 
+from plotly.subplots import make_subplots
+
 
 
 # views.py
 def data_page(request):
-    # Get the directory path
+
+    np.random.seed(0)
+    tf.random.set_seed(0)
+    
     dir_path = os.path.dirname(os.path.abspath(__file__))
-    # Construct the full file path
-    conn = sqlite3.connect('db.sqlite3')
-    # Query the table and load the data into a DataFrame
-    query = "SELECT * FROM web_App_home_book1;"
-    bookings_data = pd.read_sql_query(query, conn)
-    # Close the database connection
-    conn.close()
-    # Convert check-in and check-out dates to datetime format
-    bookings_data['Check_in'] = pd.to_datetime(bookings_data['Check_in'], format='%Y-%m-%d')
-    bookings_data['Check_out'] = pd.to_datetime(bookings_data['Check_out'], format='%Y-%m-%d')
-    # Calculate the length of stay
-    bookings_data['length_of_stay'] = (bookings_data['Check_out'] - bookings_data['Check_in']).dt.days
-    # One-hot encode categorical variables
-    bookings_data = pd.get_dummies(bookings_data, columns=['Name', 'Room_name', 'Location'])
-    # Feature Selection
-    features = ['length_of_stay', 'Name_Blue Heaven', 'Name_Ivy Cottage', 'Name_Cozy Cabin', 'Name_I-ONES', 'Room_name_Budget Room', 'Room_name_Standard Room', 'Room_name_Queen Room', 'Location_Ooty', 'Location_Coorg', 'Location_Fort Kochi', 'Location_Trivandrum']
-    X = bookings_data[features]
-    y = bookings_data['Rent']
-    # Split the Data into Training and Testing Sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # Train a Machine Learning Model
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-
-
-
-########################################################################################################ts
-    dir_path = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(dir_path, 'web_App_home_book2.csv')
+    file_path = os.path.join(dir_path, 'book.csv')
     
     df = pd.read_csv(file_path,index_col='Check_in',parse_dates=True)
     df.index.freq='MS'
     
+    homestays = ['Blue Heaven', 'Cozy Cabin', 'I-ONES', 'Ivy Cottage']
+    
     len(df)
     
-    train = df.iloc[:]
-    #test = df.iloc[36:]
+    # Create a subplot, which will allow us to add a dropdown menu
+    fig = make_subplots(rows=1, cols=1)
     
-    from sklearn.preprocessing import MinMaxScaler
-    scaler = MinMaxScaler()
+    # We will store all the plots in this dictionary
+    plots = {}
     
-    scaler.fit(train)
-    scaled_train = scaler.transform(train)
-    #scaled_test = scaler.transform(test)
+    for homestay in homestays:
+        train = df[homestay].iloc[:]
+         # Set seed values
+        np.random.seed(0)
+        tf.random.set_seed(0)
+        
+        # Scale the data
+        scaler = MinMaxScaler()
+        scaler.fit(train.values.reshape(-1, 1))
+        scaled_train = scaler.transform(train.values.reshape(-1, 1))
+        
+        # Define generator
+        n_input = 12
+        n_features = 1
+        generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
+        
+        # Define model
+        model = Sequential()
+        model.add(LSTM(100, activation='relu', input_shape=(n_input, n_features)))
+        model.add(Dense(1))
+        model.compile(optimizer='adam', loss='mse')
+        
+        # Fit model
+        model.fit(generator, epochs=50)
+        
+        # Make predictions
+        test_predictions = []
+        first_eval_batch = scaled_train[-n_input:]
+        current_batch = first_eval_batch.reshape((1, n_input, n_features))
+        
+        for i in range(12):
+            current_pred = model.predict(current_batch)[0]
+            test_predictions.append(current_pred)
+            current_batch = np.append(current_batch[:, 1:, :], [[current_pred]], axis=1)
+        
+        true_predictions = scaler.inverse_transform(test_predictions)
+        
+        print(f"{homestay} Predictions: {true_predictions.flatten()}")
+        
+        # Instead of creating a new figure for each homestay, we add them to the same figure
+        actual_rent = go.Scatter(x=df.index[-12:], y=df[homestay].values[-12:], mode='lines', name='Actual Rent')
+        predicted_rent = go.Scatter(x=df.index[-12:], y=true_predictions.flatten(), mode='lines', name='Predicted Rent')
+    
+        # Add the actual and predicted rents to the plots dictionary
+        plots[homestay] = [actual_rent, predicted_rent]
+    
+    # Now we create the dropdown menu
+    dropdown = []
+    for homestay in homestays:
+        visible = [False] * len(homestays) * 2  # We have two lines (actual and predicted) for each homestay
+        for i in range(len(homestays)):
+            if homestay == homestays[i]:
+                visible[i*2] = True
+                visible[i*2 + 1] = True
+        dropdown.append(dict(args=[{"visible": visible}], label=homestay, method="update"))
+    
+    # Add the dropdown menu to the figure
+    fig.update_layout(updatemenus=[go.layout.Updatemenu(buttons=dropdown)])
+    
+    # Finally, we add all the plots to the figure
+    for homestay in homestays:
+        fig.add_trace(plots[homestay][0])  # Actual rent
+        fig.add_trace(plots[homestay][1])  # Predicted rent
+        graph_html = plot(fig, output_type='div')
     
     
-    # define generator
-    n_input = 12
-    n_features = 1
-    generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
-    
-    
-    
-    # define model
-    model = Sequential()
-    model.add(LSTM(100, activation='relu', input_shape=(n_input, n_features)))
-    model.add(Dense(1))
-    model.compile(optimizer='adam', loss='mse')
-    
-    # fit model
-    model.fit(generator,epochs=50)
-    
-    test_predictions = []
-    
-    first_eval_batch = scaled_train[-n_input:]
-    current_batch = first_eval_batch.reshape((1, n_input, n_features))
-    
-    
-    
-    for i in range(12):
-    
-        # get the prediction value for the first batch
-        current_pred = model.predict(current_batch)[0]
-    
-        # append the prediction into the array
-        test_predictions.append(current_pred)
-    
-        # use the prediction to update the batch and remove the first value
-        current_batch = np.append(current_batch[:,1:,:],[[current_pred]],axis=1)
-    
-    
-    true_predictions = scaler.inverse_transform(test_predictions)
-    print(true_predictions)
-
-
-    # Interactive graph using Plotly
-    actual_rent = go.Scatter(x=df.index[-12:], y=df['Rent'].values[-12:], mode='lines', name='Actual Rent')
-    predicted_rent = go.Scatter(x=df.index[-12:], y=true_predictions.flatten(), mode='lines', name='Predicted Rent')
-    layout = go.Layout(title='Actual vs Predicted Rent',
-                       xaxis=dict(title='Month'),
-                       yaxis=dict(title='Rent'))
-    graph_data = [actual_rent, predicted_rent]
-    graph_layout = layout
-    graph_figure = go.Figure(data=graph_data, layout=graph_layout)
-    graph_html = plot(graph_figure, output_type='div', include_plotlyjs=False)
-
     context = {
-        # Your existing context variables here...
         'graph_html': graph_html
     }
 
-    if request.method == 'POST':
-        selected_homestay = request.POST.get('selected_homestay')
-        duration_increase = request.POST.get('duration_increase')
-        if selected_homestay and duration_increase:
-            duration_increase = float(duration_increase) / 100 + 1
-            X_ones = X_test[X_test[f'Name_{selected_homestay}'] == 1]
-            y_ones_orig = model.predict(X_ones)
-            X_ones_new = X_ones.copy()
-            X_ones_new['length_of_stay'] *= duration_increase
-            y_ones_new = model.predict(X_ones_new)
-            overall_increase_percent = (y_ones_new.mean() - y_ones_orig.mean()) / y_ones_orig.mean() * 100
-            y_ones_orig_mean = y_ones_orig.mean()
-            y_ones_new_mean = y_ones_new.mean()
-            amount_increase = y_ones_new_mean - y_ones_orig_mean
-
-            # Assume the booking data represents bookings for one week
-            weeks_in_year = 52
-            amount_increase_yearly = amount_increase * weeks_in_year
-
-            context = {
-                'overall_increase_percent': overall_increase_percent,
-                'duration_increase': float(request.POST.get('duration_increase')),
-                'selected_homestay': selected_homestay,
-                'amount_increase': amount_increase_yearly,
-                'graph_html': graph_html
-            }
-        else:
-            context = {}
-    else:
-        context = {}
-
     return render(request, 'data.html', context)
 
-# Helper function to create input and output sequences for LSTM
-def create_dataset(data, look_back):
-    X, y = [], []
-    for i in range(len(data) - look_back):
-        X.append(data[i:i + look_back])
-        y.append(data[i + look_back])
-    return np.array(X), np.array(y)
-
-def data_page_ts(request):
-    if request.method == 'POST':
-        selected_homestay_ts = request.POST.get('selected_homestay_ts')
-        prediction_month = int(request.POST.get('prediction_month'))
-
-        # Connect to the SQLite database
-        conn = sqlite3.connect('db.sqlite3')
-
-        # Query the table and load the data into a DataFrame
-        query = "SELECT * FROM web_App_home_book1;"
-        bookings_data = pd.read_sql_query(query, conn)
-
-        # Convert check-in and check-out dates to datetime format
-        bookings_data['Check_in'] = pd.to_datetime(bookings_data['Check_in'], format='%Y-%m-%d', errors='coerce')
-        bookings_data['Check_out'] = pd.to_datetime(bookings_data['Check_out'], format='%Y-%m-%d', errors='coerce')
-
-        # Calculate length of stay
-        bookings_data['length_of_stay'] = (bookings_data['Check_out'] - bookings_data['Check_in']).dt.days
-
-        # Drop rows with missing or invalid dates
-        bookings_data = bookings_data.dropna(subset=['Check_in', 'Check_out', 'length_of_stay'])
-
-        # Convert to time series format
-        bookings_data['Booking_Date'] = bookings_data['Check_in'].dt.date
-        bookings_by_date = bookings_data.groupby(['Booking_Date', 'Name', 'length_of_stay', 'Room_name']).size().reset_index(name='Bookings')
-        
-
-        # Convert Booking_Date to datetime
-        bookings_by_date['Booking_Date'] = pd.to_datetime(bookings_by_date['Booking_Date'])
-
-        # Set the forecasting period (1 year)
-        forecast_period = 365
-
-        group = bookings_by_date[bookings_by_date['Name'] == selected_homestay_ts]
-
-        # Prepare the data for LSTM
-        data = group.groupby('Booking_Date')['Bookings'].sum().reset_index()
-        data = data.set_index('Booking_Date').reindex(pd.date_range(start=data['Booking_Date'].min(), end=data['Booking_Date'].max(), freq='D'), fill_value=0)
-        data = data.reset_index()
-        data = data['Bookings'].values.reshape(-1, 1)
-
-        # Normalize the data
-        scaler = MinMaxScaler()
-        data_scaled = scaler.fit_transform(data)
-
-        # Split the data into training and testing sets
-        train_size = int(len(data_scaled) * 0.8)
-        train_data = data_scaled[:train_size]
-        test_data = data_scaled[train_size:]
-
-        # Prepare the data for LSTM input
-        look_back = 30  # Number of previous time steps to use as input
-        train_X, train_y = create_dataset(train_data, look_back)
-        test_X, test_y = create_dataset(test_data, look_back)
-
-        # Build the LSTM model
-        model = Sequential()
-        model.add(LSTM(64, input_shape=(look_back, 1)))
-        model.add(Dense(1))
-        model.compile(optimizer='adam', loss='mean_squared_error')
-
-        # Train the model
-        early_stop = EarlyStopping(monitor='val_loss', patience=5)
-        model.fit(train_X, train_y, epochs=30, batch_size=128, validation_data=(test_X, test_y), callbacks=[early_stop], verbose=0)
-
-        # Generate forecasts for the next year
-        forecasts = []
-        inputs = data_scaled[-look_back:].reshape(1, look_back, 1)
-        for _ in range(forecast_period):
-            forecast = model.predict(inputs, verbose=0)
-            forecasts.append(forecast[0, 0])
-            inputs = np.roll(inputs, -1, axis=1)
-            inputs[0, -1, 0] = forecast[0, 0]
-
-        forecasts = scaler.inverse_transform(np.array(forecasts).reshape(-1, 1)).flatten()
-
-        # Calculate monthly sales in actual price
-        monthly_sales = [np.sum(forecasts[i:i+30]) for i in range(0, len(forecasts)-30, 30)]
-
-        # Calculate the sales for the same month from the previous year
-        last_year_sales = 0
-        current_year = pd.to_datetime('today').year  # Get the current year
-
-        # Check if the data contains bookings for the previous year
-        last_year_data = group[group['Booking_Date'].dt.year == current_year - 1]
-        if not last_year_data.empty:
-            last_year_sales_data = last_year_data[last_year_data['Booking_Date'].dt.month == prediction_month]
-            last_year_sales = calculate_sales(last_year_sales_data)
-
-        # If no data for the previous year, check for the year before that
-        if last_year_sales == 0:
-            two_years_ago = current_year - 2
-            two_years_ago_data = group[group['Booking_Date'].dt.year == two_years_ago]
-            if not two_years_ago_data.empty:
-                two_years_ago_sales_data = two_years_ago_data[two_years_ago_data['Booking_Date'].dt.month == prediction_month]
-                last_year_sales = calculate_sales(two_years_ago_sales_data)
-
-        predicted_sales = monthly_sales[prediction_month - 1]  # Adjust for 0-based indexing
-
-        context = {
-            'selected_homestay_ts': selected_homestay_ts,
-            'prediction_month': prediction_month,
-            'predicted_sales': predicted_sales,
-            'last_year_sales': last_year_sales,
-        }
-        return render(request, 'data.html', context)
-
-    return render(request, 'data.html')
-
-# Function to calculate sales based on room type and length of stay
-def calculate_sales(sales_data):
-    total_sales = 0
-    for _, row in sales_data.iterrows():
-        room_type = row['Room_name']
-        length_of_stay = row['length_of_stay']
-        if room_type == 'Budget Room':
-            room_rate = 900
-        elif room_type == 'Standard Room':
-            room_rate = 1300
-        elif room_type == 'Queen Room':
-            room_rate = 1500
-        else:
-            room_rate = 0
-        rent = length_of_stay * room_rate
-        total_sales += rent
-    return total_sales
 
 
 # views.py
