@@ -100,31 +100,16 @@ body {font-family: Arial, Helvetica, sans-serif;}
     <h1 class="w3-jumbo"><b>DATA</b></h1>
     <h1 class="w3-xxxlarge w3-text-red"><b>About.</b></h1>
     <hr style="width:50px;border:5px solid red" class="w3-round">
-
+    </div>
    <!-- data_bike.html -->
-<div class="w3-container">
-  <h2>Predict the increase in Rent for Bike Station</h2>
-  <form method="post">
-      {% csrf_token %}
-      <label for="duration_increase">Select the Bike Station:</label>
-      <select name="selected_bikestation" id="selected_bikestation" required>
-          <option value="Bikers Spots">Bikers Spots</option>
-          <option value="Bikers Point">Bikers Point</option>
-          <option value="Bikers Hunt">Bikers Hunt</option>
-          <option value="Bikers Lover">Bikers Lover</option>
-          <option value="Bikers Hub">Bikers Hub</option>
-          <option value="iones two wheelers">iones two wheelers</option>
-      </select>
-      <label for="duration_increase">Type the increase in length of stay (%):</label>
-      <input type="number" id="duration_increase" name="duration_increase" min="0" required>
-      <button type="submit">Calculate</button>
-  </form>
-  {% if overall_increase_percent %}
-  <p>The sales for {{ selected_bikestation }} will increase by {{ overall_increase_percent|floatformat:2 }}% (+{{ amount_increase|floatformat:0 }}) when the length of stay is increased by {{ duration_increase }}% for one year.</p>
-  {% endif %}
 </div>
 
-
+<div class="w3-container">
+  <h2>Sales in next year (Time Series)</h2>
+  <!-- Placeholder for Plotly graph -->
+  <div id="graph_div">
+    {{ graph_html | safe }}
+  </div>
 </div>
 
 
