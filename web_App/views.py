@@ -980,59 +980,95 @@ def data_page(request):
 
 # views.py
 def data_bike(request):
-    # Construct the full file path
-    conn = sqlite3.connect('db.sqlite3')
-    # Query the table and load the data into a DataFrame
-    query = "SELECT * FROM web_App_bike_books;"
-    bookings_data = pd.read_sql_query(query, conn)
-    # Close the database connection
-    conn.close()
-    # Convert check-in and check-out dates to datetime format
-    bookings_data['Rent_date'] = pd.to_datetime(bookings_data['Rent_date'], format='%Y-%m-%d')
-    bookings_data['Return_date'] = pd.to_datetime(bookings_data['Return_date'], format='%Y-%m-%d')
-    # Calculate the length of stay
-    bookings_data['length_of_stay'] = (bookings_data['Return_date'] - bookings_data['Rent_date']).dt.days
-    # One-hot encode categorical variables
-    bookings_data = pd.get_dummies(bookings_data, columns=['Bikestation_name', 'Bike_name'])
-    # Feature Selection
-    features = ['length_of_stay', 'Bikestation_name_Bikers Spots', 'Bikestation_name_Bikers Point', 'Bikestation_name_Bikers Hunt', 'Bikestation_name_Bikers Lover', 'Bikestation_name_Bikers Hub', 'Bikestation_name_iones two wheelers', 'Bike_name_Continental GT 650', 'Bike_name_Hunter 350', 'Bike_name_Himalayan 450', 'Bike_name_pulsar', 'Bike_name_DIO', 'Bike_name_Royal enfeild interceptor', 'Bike_name_Activa', 'Bike_name_Royal enfeild bullet 350']
-    X = bookings_data[features]
-    y = bookings_data['total_amout']
-    # Split the Data into Training and Testing Sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # Train a Machine Learning Model
-    model = LinearRegression()
-    model.fit(X_train, y_train)
 
-    if request.method == 'POST':
-        selected_bikestation = request.POST.get('selected_bikestation')
-        duration_increase = request.POST.get('duration_increase')
-        if selected_bikestation and duration_increase:
-            duration_increase = float(duration_increase) / 100 + 1
-            X_ones = X_test[X_test[f'Bikestation_name_{selected_bikestation}'] == 1]
-            y_ones_orig = model.predict(X_ones)
-            X_ones_new = X_ones.copy()
-            X_ones_new['length_of_stay'] *= duration_increase
-            y_ones_new = model.predict(X_ones_new)
-            overall_increase_percent = (y_ones_new.mean() - y_ones_orig.mean()) / y_ones_orig.mean() * 100
-            y_ones_orig_mean = y_ones_orig.mean()
-            y_ones_new_mean = y_ones_new.mean()
-            amount_increase = y_ones_new_mean - y_ones_orig_mean
-
-            # Assume the booking data represents bookings for one week
-            weeks_in_year = 52
-            amount_increase_yearly = amount_increase * weeks_in_year
-
-            context = {
-                'overall_increase_percent': overall_increase_percent,
-                'duration_increase': float(request.POST.get('duration_increase')),
-                'selected_bikestation': selected_bikestation,
-                'amount_increase': amount_increase_yearly
-            }
-        else:
-            context = {}
-    else:
-        context = {}
+    np.random.seed(0)
+    tf.random.set_seed(0)
+    
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(dir_path, 'bookbike.csv')
+    
+    df = pd.read_csv(file_path,index_col='Rent_date',parse_dates=True)
+    df.index.freq='MS'
+    
+    homestays = ['Bikers Hub', 'Bikers Hunt', 'Bikers Lover', 'Bikers Point', 'Bikers Spots', 'iones two wheelers']
+    
+    len(df)
+    
+    # Create a subplot, which will allow us to add a dropdown menu
+    fig = make_subplots(rows=1, cols=1)
+    
+    # We will store all the plots in this dictionary
+    plots = {}
+    
+    for homestay in homestays:
+        train = df[homestay].iloc[:]
+         # Set seed values
+        np.random.seed(0)
+        tf.random.set_seed(0)
+        
+        # Scale the data
+        scaler = MinMaxScaler()
+        scaler.fit(train.values.reshape(-1, 1))
+        scaled_train = scaler.transform(train.values.reshape(-1, 1))
+        
+        # Define generator
+        n_input = 12
+        n_features = 1
+        generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
+        
+        # Define model
+        model = Sequential()
+        model.add(LSTM(100, activation='relu', input_shape=(n_input, n_features)))
+        model.add(Dense(1))
+        model.compile(optimizer='adam', loss='mse')
+        
+        # Fit model
+        model.fit(generator, epochs=50)
+        
+        # Make predictions
+        test_predictions = []
+        first_eval_batch = scaled_train[-n_input:]
+        current_batch = first_eval_batch.reshape((1, n_input, n_features))
+        
+        for i in range(12):
+            current_pred = model.predict(current_batch)[0]
+            test_predictions.append(current_pred)
+            current_batch = np.append(current_batch[:, 1:, :], [[current_pred]], axis=1)
+        
+        true_predictions = scaler.inverse_transform(test_predictions)
+        
+        print(f"{homestay} Predictions: {true_predictions.flatten()}")
+        
+        # Instead of creating a new figure for each homestay, we add them to the same figure
+        actual_rent = go.Scatter(x=df.index[-12:], y=df[homestay].values[-12:], mode='lines', name='Actual Rent')
+        predicted_rent = go.Scatter(x=df.index[-12:], y=true_predictions.flatten(), mode='lines', name='Predicted Rent')
+    
+        # Add the actual and predicted rents to the plots dictionary
+        plots[homestay] = [actual_rent, predicted_rent]
+    
+    # Now we create the dropdown menu
+    dropdown = []
+    for homestay in homestays:
+        visible = [False] * len(homestays) * 2  # We have two lines (actual and predicted) for each homestay
+        for i in range(len(homestays)):
+            if homestay == homestays[i]:
+                visible[i*2] = True
+                visible[i*2 + 1] = True
+        dropdown.append(dict(args=[{"visible": visible}], label=homestay, method="update"))
+    
+    # Add the dropdown menu to the figure
+    fig.update_layout(updatemenus=[go.layout.Updatemenu(buttons=dropdown)])
+    
+    # Finally, we add all the plots to the figure
+    for homestay in homestays:
+        fig.add_trace(plots[homestay][0])  # Actual rent
+        fig.add_trace(plots[homestay][1])  # Predicted rent
+        graph_html = plot(fig, output_type='div')
+    
+    
+    context = {
+        'graph_html': graph_html
+    }
 
     return render(request, 'data_bike.html', context)
 
