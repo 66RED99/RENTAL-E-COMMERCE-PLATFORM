@@ -87,20 +87,20 @@ body {
 </nav>
 <h1 style="text-align: center;margin-left: 250px;color: #007bff;">HOME STAY</h1>
 {% for k in home_stay %}
-<form  id="bike_" action="{% url 'select_homestay' %}" method="post" enctype="multipart/form-data" >
+<form id="bike_" action="{% url 'select_homestay' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card">
         <input type="hidden" value="{{ k.Home_stay }}" name="homestay" id="homestay">
         <input type="hidden" value="{{ k.Room_name }}" name="room" id="room">
-        <h2 >{{ k.Room_name }}</h2>
+        {% if k.Room_image %}
+            <img src="{{ k.Room_image }}" alt="{{ k.Room_name }}" style="max-width: 100%;">
+        {% endif %}
+        <h2>{{ k.Room_name }}</h2>
         <p><strong>Type:</strong> {{ k.Room_type }}</p>
         <p><strong>Rent Per Night:</strong> {{ k.Price }}</p>
         <p><strong>Discription:</strong> {{ k.Discription }}</p>
-        <p><button type="submit">Select Room</Select></Select></button></p>
+        <p><button type="submit">Select Room</button></p>
     </div>
-    </form>
-  {% endfor %}
-</body>
-</html>
-
+</form>
+{% endfor %}
 

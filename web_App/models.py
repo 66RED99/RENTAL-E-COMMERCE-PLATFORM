@@ -42,6 +42,7 @@ class Room_details(models.Model):
     Room_type = models.CharField(max_length=255)
     Price = models.IntegerField()
     Discription = models.CharField(max_length=255)
+    Room_image = models.CharField(max_length=255, null=True, blank=True)
 
 class Bike_books(models.Model):
     Sl_no = models.IntegerField(primary_key=True)

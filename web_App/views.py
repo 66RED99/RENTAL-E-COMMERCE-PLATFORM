@@ -481,9 +481,9 @@ def select_homestay(request):
 
 def select_room(request):
     home_stay = request.POST.get("name")
-    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay).values())
+    home_stay_details = list(Room_details.objects.filter(Home_stay=home_stay).values('Home_stay', 'Room_name', 'Room_type', 'Price', 'Discription', 'Room_image'))
     home_stays= {'home_stay': home_stay_details}
-    return render(request, "room_selection.html",home_stays)
+    return render(request, "room_selection.html", home_stays)
 
 def book_homestay_(request):
     home_stay = request.POST.get("homestay")
