@@ -39,5 +39,3 @@ This project is a Rental Booking System developed from January 2024 to April 202
 
 - **Duration**: January 2024 – April 2024
 - **Roles**: Full Stack Development, AI Integration, Data Analysis
-
-For more information, visit the [project repository](link).
