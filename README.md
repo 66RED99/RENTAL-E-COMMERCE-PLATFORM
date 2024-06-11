@@ -13,7 +13,7 @@ This project is a Rental Booking System developed from January 2024 to April 202
 ## Screenshots
 
 ### Homepage
-![Homepage](path/to/your/project.png)
+![Homepage](showcase/project.png)
 
 ### Booking Page
 ![Booking Page](path/to/your/inventory.png)
