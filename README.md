@@ -16,14 +16,14 @@ This project is a Rental Booking System developed from January 2024 to April 202
 ![Homepage](showcase/project.png)
 
 ### Booking Page
-![Booking Page](path/to/your/inventory.png)
+![Booking Page](showcase/inventory.png)
 
 ### Chatbot Interaction
-![Chatbot Interaction](path/to/your/aichatbot.png)
+![Chatbot Interaction](showcase/aichatbot.png)
 
 ### Data Analytics
-![Chatbot Interaction](path/to/your/data1.png)
-![Chatbot Interaction](path/to/your/data2.png)
+![Chatbot Interaction](showcase/data1.png)
+![Chatbot Interaction](showcase/data2.png)
 
 ## Technologies Used
 
