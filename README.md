@@ -1,7 +1,4 @@
 # Rental Booking System
-
-![Project Screenshot](path/to/your/screenshot.png)
-
 ## Overview
 
 This project is a Rental Booking System developed from January 2024 to April 2024, designed for managing homestay and bike rentals.
@@ -16,13 +13,17 @@ This project is a Rental Booking System developed from January 2024 to April 202
 ## Screenshots
 
 ### Homepage
-![Homepage](path/to/your/homepage_screenshot.png)
+![Homepage](path/to/your/project.png)
 
 ### Booking Page
-![Booking Page](path/to/your/booking_page_screenshot.png)
+![Booking Page](path/to/your/inventory.png)
 
 ### Chatbot Interaction
-![Chatbot Interaction](path/to/your/chatbot_screenshot.png)
+![Chatbot Interaction](path/to/your/aichatbot.png)
+
+### Data Analytics
+![Chatbot Interaction](path/to/your/data1.png)
+![Chatbot Interaction](path/to/your/data2.png)
 
 ## Technologies Used
 
