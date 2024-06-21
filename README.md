@@ -14,6 +14,7 @@ This project is a Rental Booking System developed from January 2024 to April 202
 
 ![synopsis](showcase/video.mp4)
 
+
 ## Screenshots
 
 ### Homepage
