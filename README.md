@@ -10,12 +10,6 @@ This project is a Rental Booking System developed from January 2024 to April 202
 - **Database Management**: SQLite3 for models, tables, and queries.
 - **Predictive Analysis**: Time series analysis to forecast rental trends with Python (pandas, NumPy) and TensorFlow/Keras.
 
-## Synopsis
-
-<!-- Embed YouTube video -->
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=50gj9AsXMrE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-
 
 ## Screenshots
 
