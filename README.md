@@ -12,9 +12,8 @@ This project is a Rental Booking System developed from January 2024 to April 202
 
 ## Synopsis
 
-<a href="https://www.youtube.com/watch?v=50gj9AsXMrE" target="_blank">
-    <img src="https://www.youtube.com/watch?v=50gj9AsXMrE/0.jpg" alt="Watch Synopsis" />
-</a>
+<!-- Embed YouTube video -->
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=50gj9AsXMrE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 
