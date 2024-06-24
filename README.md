@@ -1,3 +1,5 @@
+I have uploaded the entire synopsis video here : https://www.youtube.com/watch?v=50gj9AsXMrE
+
 # Rental Booking System
 ## Overview
 
