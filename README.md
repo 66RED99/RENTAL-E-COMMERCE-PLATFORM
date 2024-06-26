@@ -1,4 +1,4 @@
-
+### I have uploaded the entire synopsis video here : https://www.youtube.com/watch?v=50gj9AsXMrE
 
 # Rental Booking System
 ## Overview
@@ -28,7 +28,7 @@ This project is a Rental Booking System developed from January 2024 to April 202
 ![Chatbot Interaction](showcase/data1.png)
 ![Chatbot Interaction](showcase/data2.png)
 
-### I have uploaded the entire synopsis video here : https://www.youtube.com/watch?v=50gj9AsXMrE
+
 
 ## Technologies Used
 
